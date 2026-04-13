@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Daftar - Sistem Klasifikasi dan Rekomendasi Sepatu Bola">
+    <title>Daftar - Football Boots Classifier</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/css/components.css" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-wrapper animate-fade-up delay-100">
+        <!-- Left Sidebar (Branding) -->
+        <div class="auth-sidebar">
+            <div class="auth-sidebar-content">
+                <div class="mb-4">
+                    <span class="fs-1">⚽</span>
+                </div>
+                <h1 class="fw-800 display-5 mb-3">Bergabunglah Sekarang</h1>
+                <p class="fs-5 opacity-75">Dapatkan rekomendasi sepatu bola yang dipersonalisasi sesuai gaya bermain dan posisi Anda di lapangan.</p>
+                
+                <!-- Boot showcase on sidebar -->
+                <div class="d-flex gap-3 mt-5 pt-4" style="opacity: 0.85;">
+                    <div class="text-center">
+                        <img src="/static/images/boot_speed.png" alt="Speed Boot" 
+                             style="width: 90px; height: 65px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); border-radius: 8px;">
+                        <div class="mt-1" style="font-size: 0.7rem; opacity: 0.8;">Speed</div>
+                    </div>
+                    <div class="text-center">
+                        <img src="/static/images/boot_control.png" alt="Control Boot" 
+                             style="width: 90px; height: 65px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); border-radius: 8px;">
+                        <div class="mt-1" style="font-size: 0.7rem; opacity: 0.8;">Control</div>
+                    </div>
+                    <div class="text-center">
+                        <img src="/static/images/boot_power.png" alt="Power Boot" 
+                             style="width: 90px; height: 65px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); border-radius: 8px;">
+                        <div class="mt-1" style="font-size: 0.7rem; opacity: 0.8;">Power</div>
+                    </div>
+                </div>
+            </div>
+            <div class="auth-sidebar-content opacity-50">
+                <small>© <span id="current-year"></span> Football Boots Classifier. AI-Powered.</small>
+            </div>
+        </div>
+
+        <!-- Right Main (Form) -->
+        <div class="auth-main">
+            <!-- Theme Toggle -->
+            <div class="position-absolute top-0 end-0 p-4">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="bi bi-moon-stars-fill theme-icon" id="theme-icon"></i>
+                </button>
+            </div>
+
+            <div class="auth-form-container">
+                <div class="mb-5 d-lg-none text-center">
+                    <span class="fs-1 mb-2 d-block">⚽</span>
+                    <h2 class="fw-800">Boots Classifier</h2>
+                </div>
+
+                <div class="mb-4">
+                    <h2 class="fw-800 mb-1">Buat Akun Baru</h2>
+                    <p class="text-muted-custom">Daftar secara gratis untuk mulai menggunakan sistem.</p>
+                </div>
+
+                <div id="alert-container"></div>
+
+                <form id="register-form" onsubmit="handleRegister(event)">
+                    <div class="form-floating mb-3 input-with-icon">
+                        <input type="text" class="form-control" id="username" 
+                               placeholder="Username" required minlength="3" autocomplete="username">
+                        <label for="username">Username</label>
+                        <i class="bi bi-person"></i>
+                    </div>
+
+                    <div class="form-floating mb-3 input-with-icon">
+                        <input type="password" class="form-control" id="password" 
+                               placeholder="Password" required minlength="4" autocomplete="new-password">
+                        <label for="password">Password</label>
+                        <i class="bi bi-eye" id="togglePasswordIcon" onclick="AppUtil.togglePassword('password', 'togglePasswordIcon')"></i>
+                    </div>
+
+                    <div class="form-floating mb-4 input-with-icon">
+                        <input type="password" class="form-control" id="confirm-password" 
+                               placeholder="Konfirmasi Password" required autocomplete="new-password">
+                        <label for="confirm-password">Konfirmasi Password</label>
+                        <i class="bi bi-lock"></i>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom w-100 py-3 mb-4" id="btn-register">
+                        <i class="bi bi-person-plus me-2"></i>Buat Akun
+                    </button>
+
+                    <div class="text-center">
+                        <span class="text-muted-custom">Sudah punya akun? </span>
+                        <a href="/login.html" class="fw-600 text-primary-custom">Masuk di sini</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/theme.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/config.js"></script>
+    <script src="/static/js/auth.js"></script>
+</body>
+</html>

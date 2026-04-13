@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Panel - Sistem Klasifikasi Sepatu Bola">
+    <title>Admin Panel - Football Boots Classifier</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/css/components.css" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom" style="background-color: var(--bg-card-solid);">
+        <div class="container">
+            <a class="navbar-brand" href="/admin.html">
+                <span class="brand-icon">⚽</span> Admin<span class="text-primary-custom">Panel</span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <button type="button" class="theme-toggle-btn d-lg-none" id="theme-toggle-mobile" aria-label="Toggle Theme">
+                    <i class="bi bi-moon-stars-fill theme-icon" id="theme-icon-mobile"></i>
+                </button>
+                <button class="navbar-toggler border-0 shadow-none px-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <i class="bi bi-list fs-2"></i>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto align-items-center gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard.html"><i class="bi bi-arrow-left me-1"></i> Kembali ke User View</a>
+                    </li>
+                </ul>
+                <div class="d-none d-lg-flex align-items-center gap-3">
+                    <button type="button" class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">
+                        <i class="bi bi-moon-stars-fill theme-icon" id="theme-icon"></i>
+                    </button>
+                    <button class="btn btn-secondary-custom btn-sm py-1 px-3" onclick="logout()">
+                        <i class="bi bi-box-arrow-right me-1"></i> Keluar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="page-wrapper">
+        <div class="page-container container">
+
+            <!-- Admin Header -->
+            <div class="hero-greeting mb-5 animate-fade-up" style="padding: 2rem 2.5rem;">
+                <div class="row align-items-center" style="position: relative; z-index: 2;">
+                    <div class="col">
+                        <h1 class="fw-800 mb-1"><i class="bi bi-shield-check me-2"></i>Admin Dashboard</h1>
+                        <p class="mb-0 opacity-85">Kelola dataset CSV, latih ulang model AI, dan manajemen pengguna.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="row g-3 mb-5">
+                <div class="col-6 col-lg-3">
+                    <div class="glass-card stat-card animate-fade-up delay-100 p-3 h-100">
+                        <i class="bi bi-people stat-icon mb-2"></i>
+                        <div class="stat-value fs-2" id="stat-users">0</div>
+                        <div class="stat-label">Pengguna</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="glass-card stat-card animate-fade-up delay-200 p-3 h-100">
+                        <i class="bi bi-cpu stat-icon mb-2"></i>
+                        <div class="stat-value fs-2" id="stat-predictions">0</div>
+                        <div class="stat-label">Prediksi</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="glass-card stat-card animate-fade-up delay-300 p-3 h-100">
+                        <i class="bi bi-database stat-icon mb-2"></i>
+                        <div class="stat-value fs-2" id="stat-dataset">0</div>
+                        <div class="stat-label">Data Latih</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="glass-card stat-card animate-fade-up delay-300 p-3 h-100">
+                        <i class="bi bi-bullseye stat-icon mb-2"></i>
+                        <div class="stat-value fs-2 text-primary-custom" id="stat-accuracy">-</div>
+                        <div class="stat-label">Model Akurasi</div>
+                        <small class="text-muted-custom mt-2 d-block" id="last-trained" style="font-size: 0.7rem;"></small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Nav Tabs -->
+            <div class="admin-tabs animate-fade-up flex-wrap" role="tablist">
+                <button class="admin-tab active" id="dataset-tab" data-bs-toggle="tab" data-bs-target="#tab-dataset" type="button" role="tab" onclick="handleTabSwitch('dataset')">
+                    <i class="bi bi-database me-2"></i> Dataset Master
+                </button>
+                <button class="admin-tab" id="training-tab" data-bs-toggle="tab" data-bs-target="#tab-training" type="button" role="tab" onclick="handleTabSwitch('training')">
+                    <i class="bi bi-lightning-charge me-2"></i> Training Model
+                </button>
+                <button class="admin-tab" id="users-tab" data-bs-toggle="tab" data-bs-target="#tab-users" type="button" role="tab" onclick="handleTabSwitch('users')">
+                    <i class="bi bi-people me-2"></i> Manajemen User
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="tab-content border-0 bg-transparent animate-fade-up delay-100" id="adminTabContent">
+                
+                <!-- Dataset Tab -->
+                <div class="tab-pane fade show active" id="tab-dataset" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-xl-4">
+                            <div class="glass-card border-0 shadow">
+                                <div class="section-title"><i class="bi bi-cloud-arrow-up text-primary-custom"></i> Upload Dataset</div>
+                                <p class="text-muted-custom small mb-4">Pastikan file memiliki header: <code>peminatan, brand, posisi, label_sepatu</code></p>
+                                
+                                <form onsubmit="handleUploadDataset(event)">
+                                    <div class="upload-dropzone mb-3" onclick="document.getElementById('csv-file').click()" id="dropzone">
+                                        <i class="bi bi-file-earmark-spreadsheet fs-1 text-primary-custom mb-2" style="opacity: 0.6;"></i>
+                                        <h6 class="fw-700 m-0" id="filename-display">Pilih File CSV Baru</h6>
+                                        <small class="text-muted-custom d-block mt-1">Klik untuk mencari file (maks 5MB)</small>
+                                    </div>
+                                    <input type="file" id="csv-file" accept=".csv" class="d-none" 
+                                           onchange="document.getElementById('filename-display').innerHTML='<span class=\'text-primary-custom\'><i class=\'bi bi-check-circle-fill me-1\'></i> ' + (this.files[0] ? this.files[0].name : 'Pilih File CSV') + '</span>'">
+                                    <button type="submit" class="btn btn-primary-custom w-100 py-3" id="btn-upload">
+                                        <i class="bi bi-cloud-upload me-2"></i> Proses Upload & Simpan
+                                    </button>
+                                </form>
+                                <div id="upload-status" class="mt-3"></div>
+                            </div>
+                        </div>
+                        <div class="col-xl-8">
+                            <div class="glass-card shadow-sm p-0 overflow-hidden h-100">
+                                <div class="p-4" style="border-bottom: 1px solid var(--border-color); background: var(--bg-glass);">
+                                    <div class="section-title m-0"><i class="bi bi-table text-primary-custom"></i> Pratinjau Master Data</div>
+                                </div>
+                                <div id="dataset-container" class="p-0">
+                                    <div class="text-center p-5">
+                                        <div class="spinner-border text-primary-custom" role="status"></div>
+                                        <div class="mt-3 text-muted-custom">Memuat data...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Training Tab -->
+                <div class="tab-pane fade" id="tab-training" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-xl-4">
+                            <div class="glass-card shadow border-0 h-100">
+                                <div class="section-title"><i class="bi bi-cpu-fill text-primary-custom"></i> Eksekusi Training</div>
+                                <p class="text-muted-custom small mb-4">
+                                    Model akan dibentuk secara on-the-fly dari dataset terbaru menggunakan algoritma Random Forest Classifier. Evaluasi K-Fold silang akan dilakukan secara otomatis.
+                                </p>
+                                <div class="alert alert-custom alert-warning">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Sistem akan tidak stabil selama beberapa detik saat proses fit model berlangsung.
+                                </div>
+                                <button class="btn btn-primary-custom w-100 py-3 mt-2" id="btn-train" onclick="handleTrain()">
+                                    <i class="bi bi-lightning-charge-fill me-2"></i> Mulai Proses Training AI
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-xl-8">
+                            <div id="training-status">
+                                <!-- Status goes here -->
+                            </div>
+                            
+                            <div class="glass-card mt-4 p-0 shadow-sm overflow-hidden">
+                                <div class="p-4" style="border-bottom: 1px solid var(--border-color); background: var(--bg-glass);">
+                                    <div class="section-title m-0"><i class="bi bi-journal-text text-primary-custom"></i> Log Training Sejarah</div>
+                                </div>
+                                <div id="training-logs" class="p-0"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Tab -->
+                <div class="tab-pane fade" id="tab-users" role="tabpanel">
+                    <div class="glass-card p-0 shadow-sm overflow-hidden">
+                        <div class="p-4" style="border-bottom: 1px solid var(--border-color); background: var(--bg-glass);">
+                            <div class="section-title m-0"><i class="bi bi-people text-primary-custom"></i> Manajemen Pengguna</div>
+                        </div>
+                        <div id="users-container">
+                            <div class="text-center p-5">
+                                <div class="spinner-border text-primary-custom" role="status"></div>
+                                <div class="mt-3 text-muted-custom">Memuat pengguna...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/theme.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/config.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mToggle = document.getElementById('theme-toggle-mobile');
+            const mIcon = document.getElementById('theme-icon-mobile');
+            if(mToggle && mIcon) {
+                mToggle.addEventListener('click', () => {
+                    ThemeManager.toggleTheme();
+                    if(ThemeManager.currentTheme === 'dark') {
+                        mIcon.className = 'bi bi-moon-stars-fill theme-icon';
+                        mIcon.style.transform = 'rotate(360deg)';
+                    } else {
+                        mIcon.className = 'bi bi-sun-fill theme-icon';
+                        mIcon.style.transform = 'rotate(0deg)';
+                    }
+                });
+            }
+            
+            // Drag drop
+            const dz = document.getElementById('dropzone');
+            if(dz) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dz.addEventListener(eventName, preventDefaults, false);
+                });
+                function preventDefaults (e) { e.preventDefault(); e.stopPropagation(); }
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dz.addEventListener(eventName, () => dz.classList.add('dragover'), false);
+                });
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dz.addEventListener(eventName, () => dz.classList.remove('dragover'), false);
+                });
+                dz.addEventListener('drop', (e) => {
+                    let dt = e.dataTransfer;
+                    let files = dt.files;
+                    document.getElementById('csv-file').files = files;
+                    document.getElementById('filename-display').innerHTML='<span class=\'text-primary-custom\'><i class=\'bi bi-check-circle-fill me-1\'></i> ' + files[0].name + '</span>';
+                }, false);
+            }
+        });
+        
+        initAdmin();
+        loadDatasetRecords();
+    </script>
+</body>
+</html>

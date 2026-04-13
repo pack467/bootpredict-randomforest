@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hasil Klasifikasi - Sistem Rekomendasi Sepatu Bola">
+    <title>Hasil Klasifikasi - Football Boots Classifier</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/css/components.css" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard.html">
+                <span class="brand-icon">⚽</span> Boots<span class="text-primary-custom">Classifier</span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <button type="button" class="theme-toggle-btn d-lg-none" id="theme-toggle-mobile" aria-label="Toggle Theme">
+                    <i class="bi bi-moon-stars-fill theme-icon" id="theme-icon-mobile"></i>
+                </button>
+                <button class="navbar-toggler border-0 shadow-none px-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <i class="bi bi-list fs-2"></i>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto align-items-center gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard.html"><i class="bi bi-house"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/history.html"><i class="bi bi-clock-history"></i> Riwayat</a>
+                    </li>
+                </ul>
+                <div class="d-none d-lg-flex align-items-center gap-3">
+                    <button type="button" class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">
+                        <i class="bi bi-moon-stars-fill theme-icon" id="theme-icon"></i>
+                    </button>
+                    <button class="btn btn-secondary-custom btn-sm py-1 px-3" onclick="logout()">
+                        <i class="bi bi-box-arrow-right me-1"></i> Keluar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="page-wrapper">
+        <div class="page-container container">
+            
+            <!-- Result Header -->
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="result-header-card animate-fade-up">
+                        <div class="result-icon-wrapper">
+                            <span id="result-icon">👟</span>
+                        </div>
+                        <h1 class="display-5 fw-800 mb-2" style="background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;" id="result-class">Loading...</h1>
+                        <p class="fs-5 text-secondary" id="result-description">Sedang memproses hasil analisis AI.</p>
+                        
+                        <!-- Input Summary Pills -->
+                        <div class="d-flex flex-wrap justify-content-center gap-2 mt-4 pt-4" style="border-top: 1px solid var(--border-light);">
+                            <div class="badge bg-glass px-3 py-2" style="color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-full);">
+                                <i class="bi bi-lightning-charge me-1 text-primary-custom"></i> <span class="text-capitalize" id="input-peminatan">-</span>
+                            </div>
+                            <div class="badge bg-glass px-3 py-2" style="color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-full);">
+                                <i class="bi bi-tag me-1 text-primary-custom"></i> <span class="text-capitalize" id="input-brand">-</span>
+                            </div>
+                            <div class="badge bg-glass px-3 py-2" style="color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-full);">
+                                <i class="bi bi-person-standing me-1 text-primary-custom"></i> <span class="text-capitalize" id="input-posisi">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Boot Image Display -->
+            <div class="row justify-content-center animate-fade-up delay-100">
+                <div class="col-lg-6 col-md-8">
+                    <div class="result-boot-image-container" id="result-boot-image-container">
+                        <img src="/static/images/boot_speed.png" alt="Recommended Boot" 
+                             class="result-boot-image" id="result-boot-image">
+                        <div class="result-boot-label" id="result-boot-label">Speed Boot</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Detail -->
+            <div class="row g-4 justify-content-center mb-5">
+                <div class="col-lg-5">
+                    <div class="glass-card h-100 animate-fade-up delay-200">
+                        <div class="section-title">
+                            <i class="bi bi-graph-up text-primary-custom"></i> AI Confidence Score
+                        </div>
+                        <p class="text-muted-custom small mb-4">Tingkat kecocokan algoritma Random Forest untuk setiap kategori sepatu.</p>
+                        <div id="probability-bars"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="glass-card h-100 position-relative animate-fade-up delay-300">
+                        <div class="section-title">
+                            <i class="bi bi-shield-check text-primary-custom"></i> Explainable AI (XAI)
+                        </div>
+                        <p class="text-muted-custom small mb-4">Seberapa besar setiap input memengaruhi keputusan rekomendasi AI.</p>
+                        <div id="feature-bars"></div>
+                        
+                        <!-- AI Explanation Text -->
+                        <div class="ai-explanation-box mt-4">
+                            <h6 class="fw-700 text-primary-custom mb-2"><i class="bi bi-chat-right-text me-1"></i> Penjelasan</h6>
+                            <p class="mb-0 text-secondary small" id="explanation-text">Memuat penjelasan...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products -->
+            <div class="row justify-content-center animate-fade-up delay-300">
+                <div class="col-lg-10">
+                    <div class="section-title mb-4">
+                        <i class="bi bi-bag text-primary-custom"></i> Rekomendasi Produk Tersedia
+                    </div>
+                    <div class="row g-4" id="products-grid">
+                        <!-- Products rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="text-center mt-5 mb-4 animate-fade-up delay-400">
+                <a href="/dashboard.html" class="btn btn-primary-custom me-3 py-2 px-4 shadow">
+                    <i class="bi bi-arrow-repeat me-2"></i>Prediksi Baru
+                </a>
+                <a href="/history.html" class="btn btn-secondary-custom py-2 px-4">
+                    <i class="bi bi-clock-history me-2"></i>Riwayat Saya
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/theme.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/config.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/result.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mToggle = document.getElementById('theme-toggle-mobile');
+            const mIcon = document.getElementById('theme-icon-mobile');
+            if(mToggle && mIcon) {
+                mToggle.addEventListener('click', () => {
+                    ThemeManager.toggleTheme();
+                    if(ThemeManager.currentTheme === 'dark') {
+                        mIcon.className = 'bi bi-moon-stars-fill theme-icon';
+                        mIcon.style.transform = 'rotate(360deg)';
+                    } else {
+                        mIcon.className = 'bi bi-sun-fill theme-icon';
+                        mIcon.style.transform = 'rotate(0deg)';
+                    }
+                });
+            }
+        });
+        initResult();
+    </script>
+</body>
+</html>

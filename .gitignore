@@ -1,0 +1,30 @@
+# Virtual Environment
+venv/
+env/
+.env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# ML model files (generated via training)
+backend/app/ml/model.pkl
+backend/app/ml/encoders.pkl
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Database
+*.db
+
+# Logs
+*.log

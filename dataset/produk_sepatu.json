@@ -1,0 +1,686 @@
+{
+  "speed_boot": {
+    "adidas": [
+      {
+        "name": "Adidas F50 Elite",
+        "brand": "Adidas",
+        "price": "Rp 3.500.000",
+        "description": "Sepatu kecepatan terbaru dari Adidas, dirancang untuk akselerasi eksplosif dan sprint tanpa kompromi. Menggunakan material ultralight dengan Speedframe outsole.",
+        "features": ["Speedframe Outsole", "Lightweight Mesh", "Low-profile Design"],
+        "image": "/static/images/boot_adidas_speed_1.png",
+        "stats": { "speed": 96, "control": 68, "power": 55, "touch": 70, "weight": 95, "durability": 72 }
+      },
+      {
+        "name": "Adidas X Crazyfast.1",
+        "brand": "Adidas",
+        "price": "Rp 3.000.000",
+        "description": "Teknologi Aeropacity Speedskin untuk sentuhan bola presisi dalam kecepatan tinggi. Desain aerodinamis untuk mengurangi hambatan angin.",
+        "features": ["Aeropacity Speedskin", "Lightweight Frame", "Speedplate Outsole"],
+        "image": "/static/images/boot_adidas_speed_2.png",
+        "stats": { "speed": 93, "control": 72, "power": 58, "touch": 74, "weight": 92, "durability": 70 }
+      },
+      {
+        "name": "Adidas X Speedportal.1",
+        "brand": "Adidas",
+        "price": "Rp 3.200.000",
+        "description": "Desain Speedframe untuk akselerasi instan. Primeknit upper yang super ringan dengan Carbitex insert untuk stabilitas.",
+        "features": ["Speedframe Outsole", "Primeknit Upper", "Carbitex Insert"],
+        "image": "/static/images/boot_adidas_speed_3.png",
+        "stats": { "speed": 94, "control": 65, "power": 60, "touch": 68, "weight": 93, "durability": 68 }
+      },
+      {
+        "name": "Adidas F50 League",
+        "brand": "Adidas",
+        "price": "Rp 1.600.000",
+        "description": "Versi terjangkau dari seri F50 dengan teknologi kecepatan untuk pemain rising star. Synthetic upper ringan dan responsif.",
+        "features": ["Synthetic Speed Upper", "Lightweight Build", "Speed Stud Pattern"],
+        "image": "/static/images/boot_adidas_speed.png",
+        "stats": { "speed": 86, "control": 70, "power": 55, "touch": 68, "weight": 84, "durability": 75 }
+      },
+      {
+        "name": "Adidas X Speedflow.1",
+        "brand": "Adidas",
+        "price": "Rp 2.800.000",
+        "description": "Generasi speedflow dengan Primeknit Agilitycage untuk lockdown sempurna saat sprint maksimal dan perubahan arah cepat.",
+        "features": ["Primeknit Agilitycage", "Carbitex Speedplate", "Agility Bandage"],
+        "image": "/static/images/boot_adidas_speed_1.png",
+        "stats": { "speed": 92, "control": 66, "power": 54, "touch": 72, "weight": 91, "durability": 69 }
+      }
+    ],
+    "nike": [
+      {
+        "name": "Nike Mercurial Vapor 16 Elite",
+        "brand": "Nike",
+        "price": "Rp 3.800.000",
+        "description": "Generasi terbaru sepatu tercepat dari Nike dengan Air Zoom unit dan NikeSkin 2.0 untuk kecepatan tanpa batas.",
+        "features": ["Air Zoom Unit", "NikeSkin 2.0", "Tri-Star Stud"],
+        "image": "/static/images/boot_nike_speed_1.png",
+        "stats": { "speed": 97, "control": 65, "power": 52, "touch": 67, "weight": 96, "durability": 70 }
+      },
+      {
+        "name": "Nike Mercurial Superfly 9 Elite",
+        "brand": "Nike",
+        "price": "Rp 3.600.000",
+        "description": "Dynamic Fit collar untuk stabilitas ankle saat sprint dan perubahan arah cepat. Zoom Air untuk responsivitas.",
+        "features": ["Dynamic Fit Collar", "Zoom Air", "Anti-clog Traction"],
+        "image": "/static/images/boot_nike_speed_2.png",
+        "stats": { "speed": 95, "control": 70, "power": 56, "touch": 72, "weight": 90, "durability": 75 }
+      },
+      {
+        "name": "Nike Air Zoom Mercurial",
+        "brand": "Nike",
+        "price": "Rp 3.400.000",
+        "description": "Menggabungkan teknologi Air Zoom dengan desain Mercurial untuk kecepatan dan kenyamanan luar biasa.",
+        "features": ["Air Zoom Unit", "Vaporposite Upper", "Speed Cage"],
+        "image": "/static/images/boot_nike_speed_3.png",
+        "stats": { "speed": 94, "control": 68, "power": 58, "touch": 70, "weight": 91, "durability": 73 }
+      },
+      {
+        "name": "Nike Mercurial Vapor 15 Academy",
+        "brand": "Nike",
+        "price": "Rp 1.200.000",
+        "description": "Entry-level Mercurial dengan teknologi kecepatan Nike. Cocok untuk pemain yang baru mengenal speed boot.",
+        "features": ["Textured Mesh", "Firm Ground Plate", "Speed Design"],
+        "image": "/static/images/boot_nike_speed.png",
+        "stats": { "speed": 85, "control": 68, "power": 55, "touch": 66, "weight": 83, "durability": 76 }
+      },
+      {
+        "name": "Nike Zoom Mercurial Superfly 10",
+        "brand": "Nike",
+        "price": "Rp 4.000.000",
+        "description": "Flagship speed boot terbaru Nike dengan teknologi Zoom Air generasi terbaru dan Flyknit 360 untuk kecepatan absolut.",
+        "features": ["Zoom Air 2.0", "Flyknit 360", "Carbon Fiber Plate"],
+        "image": "/static/images/boot_nike_speed_1.png",
+        "stats": { "speed": 98, "control": 66, "power": 54, "touch": 69, "weight": 97, "durability": 68 }
+      }
+    ],
+    "puma": [
+      {
+        "name": "Puma Ultra Ultimate",
+        "brand": "Puma",
+        "price": "Rp 2.800.000",
+        "description": "Sepatu tercepat dari Puma dengan ULTRAWEAVE upper yang sangat ringan dan SPEEDPLATE outsole untuk akselerasi.",
+        "features": ["ULTRAWEAVE Upper", "SPEEDPLATE Outsole", "GripControl Pro"],
+        "image": "/static/images/boot_puma_speed_1.png",
+        "stats": { "speed": 95, "control": 67, "power": 54, "touch": 69, "weight": 94, "durability": 68 }
+      },
+      {
+        "name": "Puma Ultra 5 Carbon",
+        "brand": "Puma",
+        "price": "Rp 3.200.000",
+        "description": "Edisi carbon fiber soleplate untuk responsivitas maksimal. Material ULTRAWEAVE yang ultra-breathable dan ringan.",
+        "features": ["Carbon Fiber Soleplate", "ULTRAWEAVE", "PWRTAPE SQD"],
+        "image": "/static/images/boot_puma_speed_2.png",
+        "stats": { "speed": 96, "control": 64, "power": 56, "touch": 66, "weight": 97, "durability": 65 }
+      },
+      {
+        "name": "Puma Ultra Play",
+        "brand": "Puma",
+        "price": "Rp 800.000",
+        "description": "Speed boot entry-level dari Puma. Synthetic upper ringan untuk kecepatan di lapangan dengan harga terjangkau.",
+        "features": ["Synthetic Upper", "Speed Outsole", "Budget Speed"],
+        "image": "/static/images/boot_puma_speed_3.png",
+        "stats": { "speed": 82, "control": 65, "power": 52, "touch": 64, "weight": 80, "durability": 72 }
+      },
+      {
+        "name": "Puma Ultra Match",
+        "brand": "Puma",
+        "price": "Rp 1.500.000",
+        "description": "Mid-range speed boot dari Puma dengan fitur inti ULTRAWEAVE dan outsole ringan untuk performa sprint.",
+        "features": ["ULTRAWEAVE Lite", "Lightweight Outsole", "Speed Fit"],
+        "image": "/static/images/boot_puma_speed.png",
+        "stats": { "speed": 88, "control": 68, "power": 54, "touch": 67, "weight": 86, "durability": 74 }
+      },
+      {
+        "name": "Puma Ultra 4.1",
+        "brand": "Puma",
+        "price": "Rp 2.200.000",
+        "description": "Generasi keempat dari seri Ultra dengan MATRYXWEAVE upper yang lebih kuat namun tetap ultralight.",
+        "features": ["MATRYXWEAVE Upper", "RAPIDAGILITY Outsole", "Speed Lacing"],
+        "image": "/static/images/boot_puma_speed_1.png",
+        "stats": { "speed": 91, "control": 66, "power": 55, "touch": 68, "weight": 90, "durability": 70 }
+      }
+    ],
+    "umbro": [
+      {
+        "name": "Umbro Velocita 6 Pro",
+        "brand": "Umbro",
+        "price": "Rp 1.800.000",
+        "description": "Sepatu kecepatan premium dari Umbro dengan A-Frame chassis dan lightweight upper untuk performa sprint.",
+        "features": ["A-Frame Chassis", "Lightweight Upper", "Tri-density Outsole"],
+        "image": "/static/images/boot_umbro_speed_1.png",
+        "stats": { "speed": 88, "control": 70, "power": 60, "touch": 72, "weight": 86, "durability": 78 }
+      },
+      {
+        "name": "Umbro Velocita 6 Elite",
+        "brand": "Umbro",
+        "price": "Rp 2.200.000",
+        "description": "Versi elite dengan material yang lebih ringan dan responsive sprint plate untuk kecepatan ekstra.",
+        "features": ["Sprint Plate", "Microfiber Upper", "Speed Lacing"],
+        "image": "/static/images/boot_umbro_speed_2.png",
+        "stats": { "speed": 90, "control": 68, "power": 58, "touch": 70, "weight": 88, "durability": 75 }
+      },
+      {
+        "name": "Umbro Velocita V Club",
+        "brand": "Umbro",
+        "price": "Rp 900.000",
+        "description": "Budget speed boot dari Umbro untuk pemain club level. Synthetic upper yang ringan dan durable.",
+        "features": ["Synthetic Upper", "Direct Inject", "Club Level"],
+        "image": "/static/images/boot_umbro_speed.png",
+        "stats": { "speed": 80, "control": 66, "power": 55, "touch": 65, "weight": 78, "durability": 76 }
+      },
+      {
+        "name": "Umbro Velocita Alchemist Pro",
+        "brand": "Umbro",
+        "price": "Rp 2.500.000",
+        "description": "Seri Alchemist dengan teknologi terbaru untuk kecepatan dan kelincahan. Microfiber premium upper.",
+        "features": ["Alchemist Tech", "Microfiber Premium", "Agility Soleplate"],
+        "image": "/static/images/boot_umbro_speed_1.png",
+        "stats": { "speed": 91, "control": 72, "power": 58, "touch": 73, "weight": 89, "durability": 77 }
+      }
+    ],
+    "mizuno": [
+      {
+        "name": "Mizuno Alpha Elite",
+        "brand": "Mizuno",
+        "price": "Rp 2.500.000",
+        "description": "Teknologi D-Flex Groove untuk fleksibilitas dan kecepatan. Synthetic upper yang ringan dengan Japanese engineering.",
+        "features": ["D-Flex Groove", "Synthetic Upper", "Lightweight Design"],
+        "image": "/static/images/boot_mizuno_speed_1.png",
+        "stats": { "speed": 90, "control": 72, "power": 58, "touch": 75, "weight": 88, "durability": 80 }
+      },
+      {
+        "name": "Mizuno Alpha Made In Japan",
+        "brand": "Mizuno",
+        "price": "Rp 3.800.000",
+        "description": "Premium handcrafted speed boot dari Jepang. K-Leather upper yang super ringan dengan craftsmanship tingkat tinggi.",
+        "features": ["K-Leather", "Japanese Craftsmanship", "Premium Lightweight"],
+        "image": "/static/images/boot_mizuno_speed_2.png",
+        "stats": { "speed": 91, "control": 78, "power": 60, "touch": 82, "weight": 85, "durability": 85 }
+      },
+      {
+        "name": "Mizuno Beta KL",
+        "brand": "Mizuno",
+        "price": "Rp 2.000.000",
+        "description": "Speed boot versatile dengan K-Leather upper dan D-Flex Groove outsole untuk kecepatan dan kenyamanan.",
+        "features": ["K-Leather", "D-Flex Groove", "Versatile Speed"],
+        "image": "/static/images/boot_mizuno_speed.png",
+        "stats": { "speed": 87, "control": 74, "power": 62, "touch": 78, "weight": 84, "durability": 82 }
+      },
+      {
+        "name": "Mizuno Alpha Select",
+        "brand": "Mizuno",
+        "price": "Rp 1.400.000",
+        "description": "Speed boot terjangkau dari Mizuno dengan desain ringan dan D-Flex Groove outsole untuk performa lari.",
+        "features": ["D-Flex Groove", "Synthetic Upper", "Entry Speed"],
+        "image": "/static/images/boot_mizuno_speed_1.png",
+        "stats": { "speed": 84, "control": 70, "power": 56, "touch": 72, "weight": 82, "durability": 78 }
+      },
+      {
+        "name": "Mizuno Alpha Pro",
+        "brand": "Mizuno",
+        "price": "Rp 3.000.000",
+        "description": "Professional speed boot dengan K-Leather ringan dan teknologi Wave untuk kecepatan maksimal di lapangan.",
+        "features": ["K-Leather Pro", "Wave Technology", "Pro Speed"],
+        "image": "/static/images/boot_mizuno_speed_2.png",
+        "stats": { "speed": 92, "control": 74, "power": 59, "touch": 76, "weight": 90, "durability": 82 }
+      }
+    ]
+  },
+  "control_boot": {
+    "adidas": [
+      {
+        "name": "Adidas Predator Accuracy.1",
+        "brand": "Adidas",
+        "price": "Rp 3.300.000",
+        "description": "Zona grip khusus dengan Controlskin 2.0 untuk akurasi tendangan dan kontrol bola maksimal. Dirancang untuk playmaker.",
+        "features": ["Grip Zones", "FACET FRAME", "Controlskin 2.0"],
+        "image": "/static/images/boot_adidas_control_1.png",
+        "stats": { "speed": 68, "control": 96, "power": 75, "touch": 90, "weight": 72, "durability": 80 }
+      },
+      {
+        "name": "Adidas Copa Pure.1",
+        "brand": "Adidas",
+        "price": "Rp 3.100.000",
+        "description": "Kulit kanguru premium untuk sentuhan dan kontrol klasik yang tak tertandingi. Fusion Skin technology.",
+        "features": ["K-Leather", "Fusion Skin", "Softstud Outsole"],
+        "image": "/static/images/boot_adidas_control_2.png",
+        "stats": { "speed": 62, "control": 93, "power": 70, "touch": 95, "weight": 65, "durability": 88 }
+      },
+      {
+        "name": "Adidas Copa Pure 2 Elite",
+        "brand": "Adidas",
+        "price": "Rp 3.400.000",
+        "description": "Evolusi dari Copa Pure dengan Fusion Skin yang lebih responsif dan desain ergonomis untuk kontrol superior.",
+        "features": ["Fusion Skin 2.0", "K-Leather Plus", "Ergonomic Fit"],
+        "image": "/static/images/boot_adidas_control_3.png",
+        "stats": { "speed": 64, "control": 95, "power": 72, "touch": 96, "weight": 66, "durability": 86 }
+      },
+      {
+        "name": "Adidas Copa Gloro",
+        "brand": "Adidas",
+        "price": "Rp 1.200.000",
+        "description": "Heritage control boot dengan kulit premium dan desain klasik yang timeless. Tongue design untuk kenyamanan klasik.",
+        "features": ["Premium Leather", "Classic Tongue", "Heritage Outsole"],
+        "image": "/static/images/boot_adidas_control.png",
+        "stats": { "speed": 58, "control": 88, "power": 68, "touch": 92, "weight": 60, "durability": 90 }
+      },
+      {
+        "name": "Adidas Predator Club",
+        "brand": "Adidas",
+        "price": "Rp 900.000",
+        "description": "Control boot entry-level dari seri Predator. Textured upper untuk grip bola dengan harga terjangkau.",
+        "features": ["Textured Upper", "Control Element", "Club Level"],
+        "image": "/static/images/boot_adidas_control_1.png",
+        "stats": { "speed": 65, "control": 82, "power": 65, "touch": 78, "weight": 64, "durability": 80 }
+      }
+    ],
+    "nike": [
+      {
+        "name": "Nike Phantom GX 2 Elite",
+        "brand": "Nike",
+        "price": "Rp 3.700.000",
+        "description": "Generasi terbaru Phantom dengan Ghost Lace system dan Gripknit 2.0 untuk kontrol tanpa distraksi.",
+        "features": ["Ghost Lace", "Gripknit 2.0", "Adaptive Fit"],
+        "image": "/static/images/boot_nike_control_1.png",
+        "stats": { "speed": 74, "control": 96, "power": 68, "touch": 93, "weight": 76, "durability": 76 }
+      },
+      {
+        "name": "Nike Phantom GX Elite",
+        "brand": "Nike",
+        "price": "Rp 3.600.000",
+        "description": "Teknologi Gripknit untuk kontrol bola sempurna dan passing presisi. Generative Texture untuk sentuhan optimal.",
+        "features": ["Gripknit Texture", "Flyknit Upper", "Generative Texture"],
+        "image": "/static/images/boot_nike_control_2.png",
+        "stats": { "speed": 72, "control": 95, "power": 70, "touch": 92, "weight": 74, "durability": 78 }
+      },
+      {
+        "name": "Nike Tiempo Legend 10 Elite",
+        "brand": "Nike",
+        "price": "Rp 3.400.000",
+        "description": "Kulit premium FlyTouch Lite untuk sentuhan bola terbaik di kelasnya. Desain klasik dengan teknologi modern.",
+        "features": ["FlyTouch Lite", "K-Leather", "All Conditions Control"],
+        "image": "/static/images/boot_nike_control_3.png",
+        "stats": { "speed": 65, "control": 94, "power": 72, "touch": 97, "weight": 68, "durability": 90 }
+      },
+      {
+        "name": "Nike Tiempo Legend 10 Academy",
+        "brand": "Nike",
+        "price": "Rp 1.100.000",
+        "description": "Control boot terjangkau dari seri Tiempo. Synthetic leather untuk sentuhan bola yang nyaman dan presisi.",
+        "features": ["Synthetic Leather", "Tiempo DNA", "Academy Level"],
+        "image": "/static/images/boot_nike_control.png",
+        "stats": { "speed": 62, "control": 84, "power": 66, "touch": 82, "weight": 64, "durability": 82 }
+      },
+      {
+        "name": "Nike Phantom Luna 2 Elite",
+        "brand": "Nike",
+        "price": "Rp 3.900.000",
+        "description": "Phantom Luna generasi kedua dengan teknologi kontrol revolusioner. NikeGrip inner dan Flyknit 360 untuk presisi absolut.",
+        "features": ["NikeGrip Inner", "Flyknit 360", "Luna Plate"],
+        "image": "/static/images/boot_nike_control_1.png",
+        "stats": { "speed": 70, "control": 97, "power": 72, "touch": 94, "weight": 72, "durability": 78 }
+      }
+    ],
+    "puma": [
+      {
+        "name": "Puma Future Ultimate",
+        "brand": "Puma",
+        "price": "Rp 2.900.000",
+        "description": "FUZIONFIT+ untuk adaptasi kaki sempurna dan kontrol dinamis. Dynamic Motion System untuk agility tinggi.",
+        "features": ["FUZIONFIT+", "Dynamic Motion System", "GripControl Pro"],
+        "image": "/static/images/boot_puma_control_1.png",
+        "stats": { "speed": 78, "control": 92, "power": 65, "touch": 88, "weight": 80, "durability": 75 }
+      },
+      {
+        "name": "Puma Future 7 Ultimate",
+        "brand": "Puma",
+        "price": "Rp 3.100.000",
+        "description": "FUZIONFIT+ Elite dengan Dynamic Motion System 2.0 untuk kontrol bola terbaik dari Puma.",
+        "features": ["FUZIONFIT+ Elite", "DMS 2.0", "GripControl Skin"],
+        "image": "/static/images/boot_puma_control_2.png",
+        "stats": { "speed": 80, "control": 94, "power": 64, "touch": 90, "weight": 78, "durability": 73 }
+      },
+      {
+        "name": "Puma Future Z 1.1",
+        "brand": "Puma",
+        "price": "Rp 2.600.000",
+        "description": "Adaptive FUZIONFIT+ compression band untuk kontrol dan kreativitas. Cocok untuk playmaker kreatif.",
+        "features": ["FUZIONFIT+", "Adaptive Compression", "Creative Control"],
+        "image": "/static/images/boot_puma_control_3.png",
+        "stats": { "speed": 82, "control": 90, "power": 62, "touch": 86, "weight": 82, "durability": 72 }
+      },
+      {
+        "name": "Puma Future Match",
+        "brand": "Puma",
+        "price": "Rp 1.400.000",
+        "description": "Mid-range control boot dari Puma dengan FUZIONFIT lite band dan GripControl texture untuk kontrol bola.",
+        "features": ["FUZIONFIT Lite", "GripControl", "Match Level"],
+        "image": "/static/images/boot_puma_control.png",
+        "stats": { "speed": 75, "control": 84, "power": 60, "touch": 80, "weight": 74, "durability": 76 }
+      },
+      {
+        "name": "Puma Future Pro",
+        "brand": "Puma",
+        "price": "Rp 2.200.000",
+        "description": "Professional level control boot dengan Dynamic Motion System dan GripControl Pro texture.",
+        "features": ["DMS Pro", "GripControl Pro", "Adaptive Fit"],
+        "image": "/static/images/boot_puma_control_1.png",
+        "stats": { "speed": 76, "control": 88, "power": 63, "touch": 85, "weight": 76, "durability": 74 }
+      }
+    ],
+    "umbro": [
+      {
+        "name": "Umbro Tocco 4 Pro",
+        "brand": "Umbro",
+        "price": "Rp 1.600.000",
+        "description": "Desain touch-focused untuk kontrol bola dan distribusi passing. D30 padding untuk cushioning superior.",
+        "features": ["D30 Padding", "Soft Leather Upper", "Control Zones"],
+        "image": "/static/images/boot_umbro_control_1.png",
+        "stats": { "speed": 65, "control": 88, "power": 68, "touch": 90, "weight": 70, "durability": 82 }
+      },
+      {
+        "name": "Umbro Speciali Pro 2",
+        "brand": "Umbro",
+        "price": "Rp 1.900.000",
+        "description": "Heritage control boot dengan kulit premium dan desain klasik untuk sentuhan bola yang presisi.",
+        "features": ["Premium Leather", "Classic Heritage", "Precision Touch"],
+        "image": "/static/images/boot_umbro_control_2.png",
+        "stats": { "speed": 62, "control": 90, "power": 70, "touch": 92, "weight": 65, "durability": 85 }
+      },
+      {
+        "name": "Umbro Tocco 4 Club",
+        "brand": "Umbro",
+        "price": "Rp 800.000",
+        "description": "Budget-friendly control boot dari Umbro untuk pemain club level dengan kontrol bola yang solid.",
+        "features": ["Soft Touch Upper", "Club Level", "Comfort Fit"],
+        "image": "/static/images/boot_umbro_control.png",
+        "stats": { "speed": 60, "control": 80, "power": 62, "touch": 82, "weight": 62, "durability": 78 }
+      },
+      {
+        "name": "Umbro Speciali Eternal Team",
+        "brand": "Umbro",
+        "price": "Rp 2.300.000",
+        "description": "Seri Eternal dengan kulit premium full-grain untuk kontrol bola tingkat profesional. Heritage DNA klasik.",
+        "features": ["Full-Grain Leather", "Eternal Heritage", "Pro Control"],
+        "image": "/static/images/boot_umbro_control_1.png",
+        "stats": { "speed": 63, "control": 92, "power": 72, "touch": 94, "weight": 66, "durability": 88 }
+      }
+    ],
+    "mizuno": [
+      {
+        "name": "Mizuno Morelia Neo III",
+        "brand": "Mizuno",
+        "price": "Rp 2.700.000",
+        "description": "Kulit washable kanguru terbaik dari Mizuno untuk kontrol dan kenyamanan premium. Barefoot fit yang natural.",
+        "features": ["K-Leather Washable", "Barefoot Fit", "Lightweight Nylon Outsole"],
+        "image": "/static/images/boot_mizuno_control_1.png",
+        "stats": { "speed": 72, "control": 93, "power": 68, "touch": 96, "weight": 74, "durability": 88 }
+      },
+      {
+        "name": "Mizuno Morelia II Made in Japan",
+        "brand": "Mizuno",
+        "price": "Rp 4.200.000",
+        "description": "Craftsmanship Jepang tertinggi dengan K-Leather premium. Kontrol dan sentuhan tak tertandingi untuk purists.",
+        "features": ["Premium K-Leather", "Hand-Stitched", "Japanese MIJ"],
+        "image": "/static/images/boot_mizuno_control_2.png",
+        "stats": { "speed": 68, "control": 95, "power": 72, "touch": 98, "weight": 70, "durability": 92 }
+      },
+      {
+        "name": "Mizuno Wave Cup Legend",
+        "brand": "Mizuno",
+        "price": "Rp 2.200.000",
+        "description": "Heritage control boot dengan Wave plate technology untuk stabilitas dan kontrol bola yang konsisten.",
+        "features": ["Wave Plate", "K-Leather", "Heritage Design"],
+        "image": "/static/images/boot_mizuno_control_3.png",
+        "stats": { "speed": 65, "control": 90, "power": 70, "touch": 92, "weight": 68, "durability": 86 }
+      },
+      {
+        "name": "Mizuno Morelia Neo IV Beta",
+        "brand": "Mizuno",
+        "price": "Rp 3.200.000",
+        "description": "Generasi terbaru Morelia Neo dengan K-Leather yang lebih ringan dan outsole D-Flex untuk kontrol dinamis.",
+        "features": ["K-Leather Neo", "D-Flex Outsole", "Beta Design"],
+        "image": "/static/images/boot_mizuno_control.png",
+        "stats": { "speed": 74, "control": 94, "power": 70, "touch": 95, "weight": 76, "durability": 86 }
+      },
+      {
+        "name": "Mizuno Morelia Club",
+        "brand": "Mizuno",
+        "price": "Rp 1.000.000",
+        "description": "Control boot entry-level dengan sentuhan kulit sintetis yang lembut dan outsole nyaman dari Mizuno.",
+        "features": ["Synthetic K-Touch", "Club Level", "Comfort Design"],
+        "image": "/static/images/boot_mizuno_control_1.png",
+        "stats": { "speed": 62, "control": 82, "power": 64, "touch": 84, "weight": 65, "durability": 80 }
+      }
+    ]
+  },
+  "power_boot": {
+    "adidas": [
+      {
+        "name": "Adidas Predator Elite",
+        "brand": "Adidas",
+        "price": "Rp 3.500.000",
+        "description": "Teknologi Hybridtouch untuk power shot dan kontrol tendangan. Facet Frame outsole untuk stabilitas saat striking.",
+        "features": ["Hybridtouch", "Facet Frame", "Strike Zone"],
+        "image": "/static/images/boot_adidas_power_1.png",
+        "stats": { "speed": 62, "control": 80, "power": 96, "touch": 78, "weight": 60, "durability": 85 }
+      },
+      {
+        "name": "Adidas Predator Freak.1",
+        "brand": "Adidas",
+        "price": "Rp 3.200.000",
+        "description": "Demonskin 2.0 spines untuk grip bola saat tendangan power. Primeknit upper untuk kenyamanan.",
+        "features": ["Demonskin 2.0", "Primeknit", "Power Facet Outsole"],
+        "image": "/static/images/boot_adidas_power_2.png",
+        "stats": { "speed": 60, "control": 82, "power": 95, "touch": 80, "weight": 58, "durability": 82 }
+      },
+      {
+        "name": "Adidas Predator 24 League",
+        "brand": "Adidas",
+        "price": "Rp 1.800.000",
+        "description": "Entry-level power boot dari seri Predator. Rubber striking element untuk tendangan keras dengan harga terjangkau.",
+        "features": ["Rubber Strike Element", "Synthetic Upper", "Firm Ground"],
+        "image": "/static/images/boot_adidas_power_3.png",
+        "stats": { "speed": 65, "control": 75, "power": 88, "touch": 72, "weight": 62, "durability": 80 }
+      },
+      {
+        "name": "Adidas Predator Edge.1",
+        "brand": "Adidas",
+        "price": "Rp 2.800.000",
+        "description": "Zona Power Facet dengan Zone Skin untuk tendangan melengkung yang tajam dan power shot yang presisi.",
+        "features": ["Zone Skin", "Power Facet", "Primeknit Collar"],
+        "image": "/static/images/boot_adidas_power.png",
+        "stats": { "speed": 63, "control": 84, "power": 94, "touch": 82, "weight": 61, "durability": 83 }
+      },
+      {
+        "name": "Adidas Predator Accuracy Elite",
+        "brand": "Adidas",
+        "price": "Rp 3.600.000",
+        "description": "Menggabungkan akurasi dan power dalam satu paket. Grip element yang diperluas untuk striking zone lebih besar.",
+        "features": ["Extended Grip Elements", "Accuracy Power", "Elite Facet Frame"],
+        "image": "/static/images/boot_adidas_power_1.png",
+        "stats": { "speed": 64, "control": 86, "power": 97, "touch": 84, "weight": 62, "durability": 84 }
+      }
+    ],
+    "nike": [
+      {
+        "name": "Nike Phantom Luna Elite",
+        "brand": "Nike",
+        "price": "Rp 3.700.000",
+        "description": "StrikeReady design untuk tendangan keras dan stabil. Flyknit upper dengan power zone yang optimal.",
+        "features": ["StrikeReady Design", "Flyknit Upper", "Power Zone"],
+        "image": "/static/images/boot_nike_power_1.png",
+        "stats": { "speed": 65, "control": 78, "power": 95, "touch": 80, "weight": 62, "durability": 82 }
+      },
+      {
+        "name": "Nike Phantom Venom Elite",
+        "brand": "Nike",
+        "price": "Rp 3.400.000",
+        "description": "Precision Power technology untuk tendangan akurat dan keras. Strike zone yang diperluas untuk sweet spot lebih besar.",
+        "features": ["Precision Power", "Enhanced Strike Zone", "Hypervenom DNA"],
+        "image": "/static/images/boot_nike_power_2.png",
+        "stats": { "speed": 62, "control": 76, "power": 96, "touch": 78, "weight": 60, "durability": 84 }
+      },
+      {
+        "name": "Nike Phantom GX 2 Academy",
+        "brand": "Nike",
+        "price": "Rp 1.500.000",
+        "description": "Versatile power boot yang menggabungkan kontrol dan kekuatan. Cocok untuk pemain yang suka long-range shooting.",
+        "features": ["Textured Upper", "Versatile Stud", "Power Accuracy"],
+        "image": "/static/images/boot_nike_power_3.png",
+        "stats": { "speed": 70, "control": 80, "power": 85, "touch": 75, "weight": 68, "durability": 78 }
+      },
+      {
+        "name": "Nike Phantom Venom 2 Pro",
+        "brand": "Nike",
+        "price": "Rp 2.800.000",
+        "description": "Evolusi Venom dengan Ridged Strike Zone yang lebih luas dan Nike ACC untuk all-condition power shooting.",
+        "features": ["Ridged Strike Zone", "Nike ACC", "Power Frame"],
+        "image": "/static/images/boot_nike_power.png",
+        "stats": { "speed": 64, "control": 78, "power": 92, "touch": 76, "weight": 63, "durability": 82 }
+      },
+      {
+        "name": "Nike Phantom Luna 2 FG",
+        "brand": "Nike",
+        "price": "Rp 3.900.000",
+        "description": "Flagship power boot Nike dengan StrikeReady 2.0 dan NikeGrip inner untuk tendangan ultimate power.",
+        "features": ["StrikeReady 2.0", "NikeGrip Inner", "Luna Power Plate"],
+        "image": "/static/images/boot_nike_power_1.png",
+        "stats": { "speed": 66, "control": 80, "power": 97, "touch": 82, "weight": 64, "durability": 80 }
+      }
+    ],
+    "puma": [
+      {
+        "name": "Puma King Ultimate",
+        "brand": "Puma",
+        "price": "Rp 2.600.000",
+        "description": "Kulit premium K-Better leather untuk power dan kontrol. PUMA PWRPRINT untuk stabilitas saat tendangan keras.",
+        "features": ["K-Better Leather", "Power Sweet Spot", "PUMA PWRPRINT"],
+        "image": "/static/images/boot_puma_power_1.png",
+        "stats": { "speed": 60, "control": 82, "power": 92, "touch": 88, "weight": 58, "durability": 90 }
+      },
+      {
+        "name": "Puma King Platinum",
+        "brand": "Puma",
+        "price": "Rp 3.000.000",
+        "description": "Premium leather boot dengan K-Leather terbaik. Menggabungkan power striking dengan sentuhan klasik.",
+        "features": ["Premium K-Leather", "Power Plate", "Classic Heritage"],
+        "image": "/static/images/boot_puma_power_2.png",
+        "stats": { "speed": 58, "control": 85, "power": 93, "touch": 90, "weight": 55, "durability": 92 }
+      },
+      {
+        "name": "Puma Attacanto",
+        "brand": "Puma",
+        "price": "Rp 800.000",
+        "description": "Budget-friendly power boot dari Puma. Synthetic upper yang tahan lama dengan power strike zone.",
+        "features": ["Synthetic Upper", "Power Zone", "Budget Friendly"],
+        "image": "/static/images/boot_puma_power_3.png",
+        "stats": { "speed": 68, "control": 72, "power": 82, "touch": 70, "weight": 65, "durability": 80 }
+      },
+      {
+        "name": "Puma King Pro",
+        "brand": "Puma",
+        "price": "Rp 2.200.000",
+        "description": "Professional level King boot dengan PWRPRINT technology dan K-Leather untuk power shooting yang presisi.",
+        "features": ["K-Leather", "PWRPRINT Pro", "Professional Level"],
+        "image": "/static/images/boot_puma_power.png",
+        "stats": { "speed": 62, "control": 80, "power": 90, "touch": 85, "weight": 60, "durability": 88 }
+      },
+      {
+        "name": "Puma King Match",
+        "brand": "Puma",
+        "price": "Rp 1.400.000",
+        "description": "Mid-range power boot dari seri King. Synthetic leather yang durable dengan striking zone yang optimal.",
+        "features": ["Synthetic Leather", "Strike Zone", "Match Level"],
+        "image": "/static/images/boot_puma_power_1.png",
+        "stats": { "speed": 64, "control": 76, "power": 86, "touch": 78, "weight": 62, "durability": 84 }
+      }
+    ],
+    "umbro": [
+      {
+        "name": "Umbro Medusae 4 Elite",
+        "brand": "Umbro",
+        "price": "Rp 1.900.000",
+        "description": "A-Frame power zone untuk tendangan keras dan akurat. Desain aggressive untuk striker power.",
+        "features": ["A-Frame", "Power Strike Zone", "Firm Ground Studs"],
+        "image": "/static/images/boot_umbro_power_1.png",
+        "stats": { "speed": 65, "control": 74, "power": 90, "touch": 72, "weight": 62, "durability": 82 }
+      },
+      {
+        "name": "Umbro Accuro 3 Pro",
+        "brand": "Umbro",
+        "price": "Rp 1.700.000",
+        "description": "Power boot dengan D3O smartmaterial padding untuk impact absorption dan tendangan keras yang presisi.",
+        "features": ["D3O Smartmaterial", "Power Zones", "Precision Lacing"],
+        "image": "/static/images/boot_umbro_power_2.png",
+        "stats": { "speed": 62, "control": 76, "power": 88, "touch": 74, "weight": 60, "durability": 84 }
+      },
+      {
+        "name": "Umbro Medusae 3 Club",
+        "brand": "Umbro",
+        "price": "Rp 900.000",
+        "description": "Budget power boot dari Umbro untuk pemain club level. Striking zone yang dirancang untuk tendangan keras.",
+        "features": ["Strike Element", "Club Level", "Durable Upper"],
+        "image": "/static/images/boot_umbro_power.png",
+        "stats": { "speed": 63, "control": 70, "power": 82, "touch": 68, "weight": 60, "durability": 80 }
+      },
+      {
+        "name": "Umbro Accuro Elite",
+        "brand": "Umbro",
+        "price": "Rp 2.400.000",
+        "description": "Elite power boot dengan D3O Premium padding dan A-Frame chassis untuk tendangan power tingkat profesional.",
+        "features": ["D3O Premium", "A-Frame Elite", "Pro Power Zone"],
+        "image": "/static/images/boot_umbro_power_1.png",
+        "stats": { "speed": 64, "control": 78, "power": 92, "touch": 76, "weight": 62, "durability": 86 }
+      }
+    ],
+    "mizuno": [
+      {
+        "name": "Mizuno Rebula Cup Elite",
+        "brand": "Mizuno",
+        "price": "Rp 2.800.000",
+        "description": "Teknologi power shot dengan Bio Lock upper untuk stabilitas. CT Frame outsole untuk distribusi tenaga optimal.",
+        "features": ["Bio Lock Upper", "Power Panel", "CT Frame Outsole"],
+        "image": "/static/images/boot_mizuno_power_1.png",
+        "stats": { "speed": 65, "control": 80, "power": 92, "touch": 82, "weight": 62, "durability": 86 }
+      },
+      {
+        "name": "Mizuno Morelia Neo IV",
+        "brand": "Mizuno",
+        "price": "Rp 3.500.000",
+        "description": "Premium power boot dengan K-Leather dan power sweet spot. Japanese craftsmanship untuk tendangan presisi.",
+        "features": ["K-Leather Premium", "Power Sweet Spot", "Japanese Engineering"],
+        "image": "/static/images/boot_mizuno_power_2.png",
+        "stats": { "speed": 68, "control": 85, "power": 90, "touch": 88, "weight": 65, "durability": 90 }
+      },
+      {
+        "name": "Mizuno Monarcida Neo III Select",
+        "brand": "Mizuno",
+        "price": "Rp 1.200.000",
+        "description": "Value power boot dari Mizuno dengan synthetic upper yang durable dan outsole untuk stabilitas saat striking.",
+        "features": ["Synthetic Upper", "Firm Ground", "Durable Design"],
+        "image": "/static/images/boot_mizuno_power_3.png",
+        "stats": { "speed": 70, "control": 72, "power": 84, "touch": 72, "weight": 68, "durability": 85 }
+      },
+      {
+        "name": "Mizuno Rebula 3 Pro",
+        "brand": "Mizuno",
+        "price": "Rp 2.200.000",
+        "description": "Professional power boot dengan Bio Lock upper dan CT Frame untuk tendangan keras yang stabil dan presisi.",
+        "features": ["Bio Lock Pro", "CT Frame", "Power Strike"],
+        "image": "/static/images/boot_mizuno_power.png",
+        "stats": { "speed": 66, "control": 78, "power": 88, "touch": 80, "weight": 63, "durability": 84 }
+      },
+      {
+        "name": "Mizuno Rebula Cup Japan",
+        "brand": "Mizuno",
+        "price": "Rp 4.000.000",
+        "description": "Made in Japan power boot tertinggi dari Mizuno. K-Leather premium dengan power panel handcrafted untuk tendangan elite.",
+        "features": ["Japanese K-Leather", "Handcrafted Power Panel", "MIJ Elite"],
+        "image": "/static/images/boot_mizuno_power_1.png",
+        "stats": { "speed": 66, "control": 86, "power": 94, "touch": 90, "weight": 64, "durability": 92 }
+      }
+    ]
+  }
+}
