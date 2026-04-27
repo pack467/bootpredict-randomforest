@@ -18,7 +18,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="/dashboard.html">
+            <a class="navbar-brand" href="/dashboard">
                 <span class="brand-icon">⚽</span> Boots<span class="text-primary-custom">Classifier</span>
             </a>
             <div class="d-flex align-items-center gap-3">
@@ -32,10 +32,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto align-items-center gap-1">
                     <li class="nav-item">
-                        <a class="nav-link" href="/dashboard.html"><i class="bi bi-house"></i> Dashboard</a>
+                        <a class="nav-link" href="/dashboard"><i class="bi bi-house"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/history.html"><i class="bi bi-clock-history"></i> Riwayat</a>
+                        <a class="nav-link" href="/history"><i class="bi bi-clock-history"></i> Riwayat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/catalog"><i class="bi bi-shop"></i> Katalog</a>
                     </li>
                 </ul>
                 <div class="d-none d-lg-flex align-items-center gap-3">
@@ -134,10 +137,10 @@
 
             <!-- Actions -->
             <div class="text-center mt-5 mb-4 animate-fade-up delay-400">
-                <a href="/dashboard.html" class="btn btn-primary-custom me-3 py-2 px-4 shadow">
+                <a href="/dashboard" class="btn btn-primary-custom me-3 py-2 px-4 shadow">
                     <i class="bi bi-arrow-repeat me-2"></i>Prediksi Baru
                 </a>
-                <a href="/history.html" class="btn btn-secondary-custom py-2 px-4">
+                <a href="/history" class="btn btn-secondary-custom py-2 px-4">
                     <i class="bi bi-clock-history me-2"></i>Riwayat Saya
                 </a>
             </div>
@@ -168,8 +171,8 @@
                     }
                 });
             }
+            initResult();
         });
-        initResult();
     </script>
 </body>
 </html>

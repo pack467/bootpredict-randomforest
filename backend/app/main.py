@@ -20,10 +20,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 
-from app.config import FRONTEND_DIR, MODEL_PATH
+from app.config import FRONTEND_DIR, MODEL_PATH, UPLOAD_DIR
 from app.database.init_db import init_database
 from app.database.connection import init_pool, close_pool
-from app.routes import auth, prediction, history, admin
+from app.routes import auth, prediction, history, admin, catalog, shoe_admin
 
 
 # ==========================================
@@ -53,6 +53,10 @@ async def lifespan(app: FastAPI):
         print(f"[ML] Trained model found: {MODEL_PATH}")
     else:
         print(f"[ML] No trained model found. Admin must train the model first.")
+
+    # 4. Ensure upload directory exists
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    print(f"[Storage] Upload directory ensured at {UPLOAD_DIR}")
 
     print("\n[OK] Application ready!")
     print(f"Frontend directory: {FRONTEND_DIR}")
@@ -101,6 +105,10 @@ app.include_router(prediction.router)
 app.include_router(history.router)
 app.include_router(admin.router)
 
+# Include Jinja2 route modules
+app.include_router(catalog.router)
+app.include_router(shoe_admin.router)
+
 # ==========================================
 # STATIC FILES & FRONTEND SERVING
 # ==========================================
@@ -109,6 +117,10 @@ app.include_router(admin.router)
 static_dir = os.path.join(FRONTEND_DIR, "static")
 if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+# Mount uploads directory specifically so we can serve images
+if os.path.exists(UPLOAD_DIR):
+    app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 # ==========================================
 # FRONTEND PAGE ROUTES

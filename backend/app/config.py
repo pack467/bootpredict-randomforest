@@ -34,6 +34,14 @@ PRODUCT_CATALOG_PATH = os.path.join(DATASET_DIR, "produk_sepatu.json")
 # Frontend path
 FRONTEND_DIR = os.path.join(PROJECT_ROOT, "frontend")
 
+# Shoe catalog settings
+UPLOAD_DIR = os.path.join(FRONTEND_DIR, "static", "uploads", "shoes")
+ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
+MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
+
+# Template directory (for Jinja2 server-rendered pages)
+TEMPLATE_DIR = os.path.join(FRONTEND_DIR, "templates")
+
 # Auth settings
 SECRET_KEY = os.environ.get("SECRET_KEY", "football-boots-classifier-secret-key-2024")
 ALGORITHM = "HS256"

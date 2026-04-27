@@ -41,7 +41,7 @@ async function handlePredict(event) {
         
         // Store result and redirect
         localStorage.setItem('lastPrediction', JSON.stringify(data));
-        window.location.href = '/result.html';
+        window.location.href = '/result';
         
     } catch (error) {
         showError('alert-container', error.message);

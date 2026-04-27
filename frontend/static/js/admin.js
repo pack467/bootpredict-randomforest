@@ -25,7 +25,7 @@ async function loadDashboard() {
         
         if (!response.ok) {
             if (response.status === 401 || response.status === 403) {
-                window.location.href = '/dashboard.html';
+                window.location.href = '/dashboard';
                 return;
             }
             throw new Error('Gagal memuat dashboard');
@@ -523,5 +523,79 @@ async function loadDatasetRecords() {
         
     } catch (error) {
         console.error('Load dataset error:', error);
+    }
+}
+
+/**
+ * Clear all dataset records.
+ */
+async function handleClearDataset() {
+    if (!confirm('⚠️ PERINGATAN: Semua data latih akan dihapus permanen!\n\nAnda perlu mengupload CSV baru setelah reset.\n\nLanjutkan?')) return;
+    if (!confirm('Konfirmasi sekali lagi: Hapus SEMUA dataset?')) return;
+    
+    const btn = document.getElementById('btn-clear-dataset');
+    btn.disabled = true;
+    if (window.AppUtil) AppUtil.showLoading('Menghapus dataset...');
+    
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE}/api/admin/dataset`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.detail || 'Gagal menghapus dataset');
+        }
+        
+        if (window.AppUtil) AppUtil.showToast('success', 'Berhasil', data.message);
+        loadDashboard();
+        loadDatasetRecords();
+        
+    } catch (error) {
+        if (window.AppUtil) AppUtil.showToast('error', 'Gagal', error.message);
+        else alert('Error: ' + error.message);
+    } finally {
+        if (window.AppUtil) AppUtil.hideLoading();
+        btn.disabled = false;
+    }
+}
+
+/**
+ * Delete trained model and training logs.
+ */
+async function handleDeleteModel() {
+    if (!confirm('⚠️ PERINGATAN: Model AI dan semua log training akan dihapus!\n\nPrediksi tidak akan berfungsi sampai model dilatih ulang.\n\nLanjutkan?')) return;
+    if (!confirm('Konfirmasi sekali lagi: Hapus model dan log training?')) return;
+    
+    const btn = document.getElementById('btn-delete-model');
+    btn.disabled = true;
+    if (window.AppUtil) AppUtil.showLoading('Menghapus model...');
+    
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE}/api/admin/model`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.detail || 'Gagal menghapus model');
+        }
+        
+        if (window.AppUtil) AppUtil.showToast('success', 'Berhasil', data.message);
+        loadDashboard();
+        loadTrainingLogs();
+        
+    } catch (error) {
+        if (window.AppUtil) AppUtil.showToast('error', 'Gagal', error.message);
+        else alert('Error: ' + error.message);
+    } finally {
+        if (window.AppUtil) AppUtil.hideLoading();
+        btn.disabled = false;
     }
 }

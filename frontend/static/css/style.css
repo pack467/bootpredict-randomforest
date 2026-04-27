@@ -164,12 +164,44 @@ a:hover {
 .text-muted-custom { color: var(--text-muted) !important; }
 .text-primary-custom { color: var(--primary) !important; }
 .text-accent { color: var(--accent) !important; }
+.text-primary-darker { color: var(--primary-darker) !important; }
+.text-accent-gold { color: var(--accent-gold) !important; }
 .fw-500 { font-weight: 500; }
 .fw-600 { font-weight: 600; }
 .fw-700 { font-weight: 700; }
 .fw-800 { font-weight: 800; }
 .bg-glass { background: var(--bg-glass); }
 .border-light { border-color: var(--border-light) !important; }
+
+/* ---------- Dark Theme: Bootstrap Text Overrides ---------- */
+/* Bootstrap .text-muted and .text-secondary use --bs-secondary-color
+   which does NOT adapt to our custom dark theme variables.
+   Override globally so ALL pages get readable text on dark backgrounds. */
+[data-theme="dark"] .text-muted {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .text-secondary {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .text-primary-darker {
+    color: var(--primary-light) !important;
+}
+
+/* Dark theme: form inputs and input-group-text */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .input-group-text {
+    background-color: var(--bg-card-solid);
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
 
 /* ---------- Navbar ---------- */
 .navbar-custom {

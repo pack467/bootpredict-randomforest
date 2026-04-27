@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Kelola Sepatu - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 animate-fade-up">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a href="/admin" class="text-decoration-none text-muted">Admin Panel</a></li>
+                    <li class="breadcrumb-item active text-primary fw-600" aria-current="page">Kelola Sepatu</li>
+                </ol>
+            </nav>
+            <h2 class="fw-800 m-0"><i class="bi bi-box-seam me-2 text-primary-custom"></i>Manajemen Katalog</h2>
+        </div>
+        <a href="/admin/shoes/add" class="btn btn-primary-custom shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Tambah Sepatu Baru
+        </a>
+    </div>
+
+    <div class="glass-card p-0 overflow-hidden shadow-sm animate-fade-up delay-100">
+        <div class="table-responsive">
+            <table class="table table-custom table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th width="80" class="text-center">Gambar</th>
+                        <th>Info Sepatu</th>
+                        <th>Kategori</th>
+                        <th>Harga</th>
+                        <th width="100" class="text-center">Stok</th>
+                        <th width="100" class="text-center">Status</th>
+                        <th width="120" class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for shoe in shoes %}
+                    <tr>
+                        <td class="text-center">
+                            {% if shoe.image_filename %}
+                                <img src="/uploads/{{ shoe.image_filename }}" alt="{{ shoe.name }}" class="rounded bg-white p-1 shadow-sm object-fit-contain" style="width: 50px; height: 50px;">
+                            {% else %}
+                                <div class="rounded bg-light d-flex align-items-center justify-content-center text-muted shadow-sm" style="width: 50px; height: 50px; margin: 0 auto;">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="fw-700 text-primary-darker">{{ shoe.name }}</div>
+                            <div class="small text-muted text-uppercase tracking-wider mt-1" style="font-size: 0.7rem;">{{ shoe.brand }}</div>
+                        </td>
+                        <td>
+                            <span class="badge-custom badge-{{ shoe.category.split('_')[0] if '_' in shoe.category else 'primary' }} shadow-sm">
+                                {{ shoe.category|replace('_', ' ')|title }}
+                            </span>
+                        </td>
+                        <td class="fw-600 text-accent-gold">
+                            Rp {{ "{:,.0f}".format(shoe.price).replace(',', '.') }}
+                        </td>
+                        <td class="text-center">
+                            {% if shoe.stock > 0 %}
+                                <span class="fw-700 {% if shoe.stock <= 5 %}text-warning{% else %}text-success{% endif %}">{{ shoe.stock }}</span>
+                            {% else %}
+                                <span class="badge bg-danger rounded-pill">0</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if shoe.is_active %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Aktif</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill">Nonaktif</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="/admin/shoes/{{ shoe.id }}/edit" class="btn btn-sm btn-outline-primary rounded-circle" style="width: 32px; height: 32px; padding: 0; line-height: 30px;" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% if shoe.is_active %}
+                                <form action="/admin/shoes/{{ shoe.id }}/delete" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menonaktifkan sepatu ini?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" style="width: 32px; height: 32px; padding: 0; line-height: 30px;" title="Nonaktifkan (Soft Delete)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="empty-state p-0">
+                                <i class="bi bi-box-seam fs-1 text-muted mb-3 d-block opacity-50"></i>
+                                <h5 class="fw-700 text-secondary mb-2">Belum ada data sepatu</h5>
+                                <p class="text-muted small">Tambahkan sepatu baru untuk mengisi katalog Anda.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

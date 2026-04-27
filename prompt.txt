@@ -1,0 +1,244 @@
+Generate a CSV dataset for a Football Boots Recommendation System that uses a Random Forest classifier.
+
+================================================================================
+FILE SPECIFICATION
+================================================================================
+- Format      : CSV with header row
+- Encoding    : UTF-8 (no BOM)
+- Row count   : Exactly 500 data rows (excluding header)
+- Columns     : peminatan,brand,posisi,label_sepatu
+- All values  : lowercase, no extra whitespace, no empty rows
+
+Header:
+peminatan,brand,posisi,label_sepatu
+
+Column values:
+- peminatan   : speed | control | power
+- brand       : nike | adidas | puma | mizuno | umbro
+- posisi      : striker | midfielder | defender | goalkeeper
+- label_sepatu: speed_boot | control_boot | power_boot
+
+================================================================================
+OVERALL DISTRIBUTION TARGETS
+================================================================================
+Peminatan : speed ~170, control ~165, power ~165
+Brand     : nike ~100, adidas ~100, puma ~100, mizuno ~100, umbro ~100
+Posisi    : striker ~125, midfielder ~125, defender ~125, goalkeeper ~125
+Label     : speed_boot ~170, control_boot ~180, power_boot ~150
+
+================================================================================
+LABELING RULES — PRIMARY PROBABILITY TABLE
+================================================================================
+The label is determined primarily by the (peminatan × posisi) interaction.
+Use the probability table below to assign label_sepatu. For every row, roll
+against these probabilities (with the brand modifier applied afterward).
+
+PEMINATAN=speed:
+┌──────────────┬────────────┬──────────────┬────────────┐
+│ posisi       │ speed_boot │ control_boot │ power_boot │
+├──────────────┼────────────┼──────────────┼────────────┤
+│ striker      │    0.80    │     0.13     │    0.07    │
+│ midfielder   │    0.65    │     0.25     │    0.10    │
+│ defender     │    0.40    │     0.25     │    0.35    │
+│ goalkeeper   │    0.40    │     0.25     │    0.35    │
+└──────────────┴────────────┴──────────────┴────────────┘
+Rationale:
+- Speed strikers overwhelmingly need speed boots for pace and runs.
+- Speed midfielders mostly want speed but also need ball control for linking play.
+- Speed defenders and goalkeepers are split — they value speed but also need
+  power (for clearances/goal kicks) and control (for passing out from the back).
+
+PEMINATAN=control:
+┌──────────────┬────────────┬──────────────┬────────────┐
+│ posisi       │ speed_boot │ control_boot │ power_boot │
+├──────────────┼────────────┼──────────────┼────────────┤
+│ striker      │    0.18    │     0.65     │    0.17    │
+│ midfielder   │    0.08    │     0.82     │    0.10    │
+│ defender     │    0.07    │     0.58     │    0.35    │
+│ goalkeeper   │    0.05    │     0.60     │    0.35    │
+└──────────────┴────────────┴──────────────┴────────────┘
+Rationale:
+- Control midfielders are the most clear-cut — playmakers need ball feel above all.
+- Control strikers (false nines / technical forwards) also want speed for runs
+  or power for finishing, creating natural variety.
+- Control defenders and goalkeepers have a strong secondary lean toward
+  power_boot because they need to clear balls and take long goal kicks.
+
+PEMINATAN=power:
+┌──────────────┬────────────┬──────────────┬────────────┐
+│ posisi       │ speed_boot │ control_boot │ power_boot │
+├──────────────┼────────────┼──────────────┼────────────┤
+│ striker      │    0.12    │     0.13     │    0.75    │
+│ midfielder   │    0.08    │     0.30     │    0.62    │
+│ defender     │    0.05    │     0.12     │    0.83    │
+│ goalkeeper   │    0.05    │     0.10     │    0.85    │
+└──────────────┴────────────┴──────────────┴────────────┘
+Rationale:
+- Power defenders + goalkeepers are the most decisive — they need stability,
+  shot-stopping structure, and clearance power.
+- Power midfielders are the most ambiguous — box-to-box players also need
+  significant ball control, so control_boot gets a 30% share.
+- Power strikers mostly want power for shooting but some want speed to
+  beat the defensive line.
+
+================================================================================
+BRAND MODIFIER (applied AFTER the base probability)
+================================================================================
+Brands are NOT fully neutral. In real football, brands have boot line
+specializations. Apply a SUBTLE shift (±5%) to the base probabilities based
+on brand. This ensures the model learns that brand matters slightly,
+producing more varied predictions when users change their brand preference.
+
+┌──────────┬─────────────────────────────────────────────────────────────────┐
+│ Brand    │ Modifier                                                       │
+├──────────┼─────────────────────────────────────────────────────────────────┤
+│ nike     │ +5% speed_boot, −3% control_boot, −2% power_boot              │
+│          │ (Nike Mercurial line is the iconic speed boot)                 │
+├──────────┼─────────────────────────────────────────────────────────────────┤
+│ adidas   │ −2% speed_boot, +2% control_boot, +0% power_boot              │
+│          │ (Adidas Copa/Predator lines lean control/power)               │
+├──────────┼─────────────────────────────────────────────────────────────────┤
+│ puma     │ +0% speed_boot, +0% control_boot, +0% power_boot              │
+│          │ (Puma is balanced across Ultra/Future/King lines)              │
+├──────────┼─────────────────────────────────────────────────────────────────┤
+│ mizuno   │ −3% speed_boot, +5% control_boot, −2% power_boot              │
+│          │ (Mizuno Morelia is famous for leather touch and control)       │
+├──────────┼─────────────────────────────────────────────────────────────────┤
+│ umbro    │ −2% speed_boot, +0% control_boot, +2% power_boot              │
+│          │ (Umbro heritage boots lean toward classic/sturdy builds)       │
+└──────────┴─────────────────────────────────────────────────────────────────┘
+
+After applying the modifier, re-normalize so probabilities sum to 1.0.
+Clamp all probabilities to a minimum of 0.03 (3%) so every label has a
+non-zero chance for every combination.
+
+================================================================================
+EXAMPLE OF HOW TO GENERATE ONE ROW
+================================================================================
+Input: peminatan=speed, brand=nike, posisi=defender
+
+Step 1 — Base probability (speed × defender):
+  speed_boot=0.40, control_boot=0.25, power_boot=0.35
+
+Step 2 — Apply nike modifier (+5% speed, −3% control, −2% power):
+  speed_boot=0.45, control_boot=0.22, power_boot=0.33
+
+Step 3 — Normalize to sum=1.0:
+  speed_boot=0.45, control_boot=0.22, power_boot=0.33 (already sums to 1.0)
+
+Step 4 — Roll random number and select label:
+  e.g., random=0.38 → speed_boot (falls in 0.00–0.45 range)
+
+================================================================================
+QUALITY REQUIREMENTS
+================================================================================
+
+1. COVERAGE: All 60 possible (peminatan × brand × posisi) combinations MUST
+   appear at least 6 times in the dataset. With 500 rows / 60 combos ≈ 8.3
+   rows each, spread them as evenly as possible (7–10 rows per combination).
+
+2. LABEL VARIETY: For at least 50 of the 60 combinations, at least 2
+   different label values must be present. For the most ambiguous combos
+   (speed+defender, speed+goalkeeper, control+striker, control+defender,
+   control+goalkeeper, power+midfielder, power+striker), all 3 label values
+   should appear.
+
+3. TARGET ACCURACY: The dataset should yield a Random Forest test accuracy
+   of approximately 70–82%. This is the sweet spot:
+   - High enough that predictions feel intelligent and useful to users.
+   - Low enough that the model doesn't memorize a perfect lookup table,
+     which would make predictions monotonous (always the same output for
+     the same input pattern).
+
+4. FEATURE IMPORTANCE: The resulting model should produce feature importances
+   roughly like:
+   - peminatan : ~45–55% (strongest predictor)
+   - posisi    : ~30–40% (meaningful secondary predictor)
+   - brand     : ~10–20% (subtle but non-zero influence)
+   If brand importance is near 0%, predictions won't change when users
+   switch brands. If peminatan importance is below 40%, the model ignores
+   the user's stated preference.
+
+5. NO DUPLICATE FLOODING: No more than 3 exact duplicate rows (same values
+   in all 4 columns). Variation must come from the probabilistic labeling,
+   not from copy-pasting rows.
+
+6. CLASS BALANCE: The overall label distribution should be roughly balanced
+   (no class below 28% or above 38% of total rows). The model uses
+   class_weight="balanced" but heavily skewed data still hurts.
+
+================================================================================
+EXAMPLE ROWS (showing realistic variety)
+================================================================================
+peminatan,brand,posisi,label_sepatu
+speed,nike,striker,speed_boot
+speed,nike,striker,speed_boot
+speed,nike,striker,control_boot
+speed,adidas,midfielder,speed_boot
+speed,adidas,midfielder,control_boot
+speed,puma,defender,power_boot
+speed,puma,defender,speed_boot
+speed,mizuno,goalkeeper,power_boot
+speed,mizuno,goalkeeper,control_boot
+speed,umbro,goalkeeper,speed_boot
+control,nike,midfielder,control_boot
+control,nike,midfielder,control_boot
+control,adidas,striker,control_boot
+control,adidas,striker,speed_boot
+control,puma,defender,power_boot
+control,puma,defender,control_boot
+control,mizuno,goalkeeper,control_boot
+control,mizuno,goalkeeper,power_boot
+control,umbro,midfielder,control_boot
+power,nike,striker,power_boot
+power,nike,striker,speed_boot
+power,adidas,midfielder,control_boot
+power,adidas,midfielder,power_boot
+power,puma,defender,power_boot
+power,puma,defender,power_boot
+power,mizuno,goalkeeper,power_boot
+power,umbro,defender,power_boot
+power,umbro,striker,power_boot
+power,umbro,striker,control_boot
+
+Notice how:
+- speed+nike+striker is mostly speed_boot, but one row is control_boot
+- control+puma+defender is split between control_boot and power_boot
+- power+adidas+midfielder has both power_boot and control_boot
+- brand modifiers cause nike to lean slightly more toward speed_boot
+  and mizuno to lean slightly more toward control_boot
+
+================================================================================
+WHY THIS DESIGN PRODUCES BETTER PREDICTIONS
+================================================================================
+
+PROBLEM WITH THE CURRENT 250-ROW DATASET:
+1. Only 250 rows → model overfits; memorizes exact patterns instead of
+   learning generalizable rules.
+2. Peminatan almost perfectly determines label → brand and posisi features
+   become irrelevant (near-zero importance), so changing brand/posisi in
+   the UI doesn't change the prediction. Users see the same result for
+   different inputs → feels broken.
+3. Insufficient label variety per combination → model returns 95%+ confidence
+   for one class every time → predictions feel robotic and monotonous.
+
+HOW THIS 500-ROW DATASET FIXES IT:
+1. 500 rows gives Random Forest enough data to generalize without
+   memorizing. Combined with max_depth=10 and min_samples_leaf=2, the
+   model learns smooth decision boundaries.
+2. Brand modifiers make the brand feature meaningful. A user selecting
+   "nike" + "speed" + "striker" might see 85% speed_boot, but switching to
+   "mizuno" might shift to 75% speed_boot and 20% control_boot. This makes
+   changes in the UI feel responsive and intelligent.
+3. Position-dependent probabilities make posisi matter. A speed+striker
+   gets 80% speed_boot, but a speed+defender gets only 40% speed_boot.
+   This produces meaningfully different recommendations for different
+   positions, which is the whole point of a personalized recommendation.
+4. The 3% minimum probability floor ensures the model never reports
+   0% for any class. Every prediction shows all three options with
+   varying confidence levels — users see a nuanced recommendation,
+   not a binary yes/no answer.
+5. The ~75% accuracy target means the model is confident but not
+   mechanical. For clear-cut cases (speed+striker), it predicts correctly
+   with high confidence. For ambiguous cases (power+midfielder), the
+   probabilities are more spread out, showing the user genuine trade-offs.

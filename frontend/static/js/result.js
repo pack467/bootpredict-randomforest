@@ -57,7 +57,7 @@ function initResult() {
     
     const data = localStorage.getItem('lastPrediction');
     if (!data) {
-        window.location.href = '/dashboard.html';
+        window.location.href = '/dashboard';
         return;
     }
     

@@ -13,7 +13,9 @@ from app.controllers.admin_controller import (
     handle_get_training_logs,
     handle_get_users,
     handle_delete_user,
-    handle_get_dataset
+    handle_get_dataset,
+    handle_clear_dataset,
+    handle_delete_model
 )
 
 router = APIRouter(prefix="/api/admin", tags=["Admin"])
@@ -67,3 +69,15 @@ async def delete_user(request: Request, user_id: int):
 async def get_dataset(request: Request):
     """Get all dataset records."""
     return await handle_get_dataset(request)
+
+
+@router.delete("/dataset")
+async def clear_dataset(request: Request):
+    """Clear all dataset records to start fresh."""
+    return await handle_clear_dataset(request)
+
+
+@router.delete("/model")
+async def delete_model(request: Request):
+    """Delete trained model files and training logs."""
+    return await handle_delete_model(request)

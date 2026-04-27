@@ -1,0 +1,484 @@
+================================================================================
+  ALUR PROSES SISTEM KLASIFIKASI & REKOMENDASI SEPATU BOLA
+  Menggunakan Algoritma Random Forest
+================================================================================
+
+Sistem ini adalah aplikasi web berbasis FastAPI (backend) dan HTML/JS (frontend)
+yang mengklasifikasikan jenis sepatu bola berdasarkan input pengguna menggunakan
+algoritma Random Forest Classifier dari scikit-learn.
+
+================================================================================
+BAGIAN A: ALUR STARTUP APLIKASI (Saat Server Dijalankan)
+================================================================================
+
+A1. Inisialisasi FastAPI (main.py)
+    - Aplikasi FastAPI dibuat dengan lifespan handler
+    - Middleware CORS ditambahkan untuk komunikasi frontend-backend
+    - Router API di-mount: auth, prediction, history, admin
+    - File statis (CSS, JS, gambar) di-serve dari folder frontend/static
+
+A2. Inisialisasi Database MySQL (database/init_db.py)
+    - Membuat database 'football_boots_db' jika belum ada
+    - Membuat 4 tabel:
+      * users          : menyimpan data pengguna (id, username, password_hash, role)
+      * predictions    : menyimpan riwayat prediksi (user_id, input, hasil, penjelasan)
+      * training_logs  : menyimpan log pelatihan model (metrik, waktu)
+      * dataset_records: menyimpan data training yang dikelola admin
+    - Membuat akun admin default (username: admin, password: admin123)
+
+A3. Connection Pool (database/connection.py)
+    - Membuat pool koneksi MySQL menggunakan aiomysql (min=2, max=10)
+    - Pool digunakan oleh semua service secara async
+
+A4. Pengecekan Model
+    - Cek apakah file model.pkl sudah ada di folder backend/app/ml/
+    - Jika ada: model siap digunakan untuk prediksi
+    - Jika belum: admin harus melatih model terlebih dahulu
+
+================================================================================
+BAGIAN B: ALUR AUTENTIKASI PENGGUNA
+================================================================================
+
+B1. Registrasi (POST /api/register)
+    [Frontend: register.html]
+    1. User mengisi form: username dan password
+    2. Frontend kirim POST request ke /api/register
+    3. Backend (auth_service.py):
+       a. Cek apakah username sudah ada di tabel users
+       b. Jika sudah ada → kembalikan error "Username sudah terdaftar"
+       c. Jika belum → hash password menggunakan bcrypt
+       d. INSERT ke tabel users (role = 'user')
+       e. Buat JWT token dengan payload: {sub: user_id, username, role, exp}
+       f. Kembalikan token + data user ke frontend
+    4. Frontend simpan token & user data ke localStorage
+    5. Redirect ke halaman dashboard
+
+B2. Login (POST /api/login)
+    [Frontend: login.html]
+    1. User mengisi form: username dan password
+    2. Frontend kirim POST request ke /api/login
+    3. Backend (auth_service.py):
+       a. Query user dari tabel users berdasarkan username
+       b. Jika tidak ditemukan → error "Username tidak ditemukan"
+       c. Verifikasi password dengan bcrypt.checkpw()
+       d. Jika salah → error "Password salah"
+       e. Jika cocok → buat JWT token (berlaku 24 jam)
+       f. Kembalikan token + data user
+    4. Frontend simpan token ke localStorage
+    5. Redirect ke dashboard
+
+B3. Proteksi Halaman
+    - Setiap request API menyertakan header: Authorization: Bearer <token>
+    - Backend decode token dengan PyJWT → validasi exp, signature
+    - Jika token invalid/expired → HTTP 401
+
+================================================================================
+BAGIAN C: ALUR TRAINING MODEL RANDOM FOREST (Admin)
+================================================================================
+
+C1. Admin Trigger Training (POST /api/admin/train)
+    [Frontend: admin.html → tombol "Train Model"]
+    1. Admin klik tombol "Train Model" di panel admin
+    2. Frontend kirim POST ke /api/admin/train dengan Bearer token
+    3. Backend verifikasi role == 'admin'
+    4. Memanggil admin_service.trigger_training()
+       → Memanggil train_model() di ml/train.py
+
+C2. Preprocessing Data (ml/preprocessing.py → preprocess_pipeline)
+    Langkah-langkah:
+
+    STEP 1: Load Dataset
+    - Baca file CSV dari dataset/sepatu_dataset.csv
+    - File berisi kolom: peminatan, brand, posisi, label_sepatu
+    - Validasi kolom yang diperlukan ada
+    - Bersihkan data: strip whitespace, lowercase semua nilai
+    - Hapus baris dengan nilai null (dropna)
+    - Contoh data:
+      peminatan=speed, brand=nike, posisi=striker, label_sepatu=speed_boot
+
+    STEP 2: Label Encoding
+    - Buat LabelEncoder untuk setiap kolom kategorikal:
+      * peminatan: speed→0, control→1, power→2 (urutan alfabet)
+      * brand: adidas→0, mizuno→1, nike→2, puma→3, umbro→4
+      * posisi: defender→0, goalkeeper→1, midfielder→2, striker→3
+      * label_sepatu: control_boot→0, power_boot→1, speed_boot→2
+    - LabelEncoder mengubah teks kategorikal menjadi angka integer
+    - Ini diperlukan karena Random Forest hanya menerima input numerik
+
+    STEP 3: Encode Features
+    - Fitur (X): kolom peminatan, brand, posisi (3 fitur)
+      → Menjadi array 2D, contoh: [[0, 2, 3], [2, 0, 0], ...]
+    - Target (y): kolom label_sepatu
+      → Menjadi array 1D, contoh: [2, 0, 1, ...]
+    
+    STEP 4: Train-Test Split (Stratified)
+    - Bagi data 80% training, 20% testing
+    - Menggunakan stratify=y → distribusi kelas tetap proporsional
+    - random_state=42 untuk reproduktifitas
+    - Contoh: 251 data → ~200 train, ~51 test
+
+    STEP 5: Simpan Encoders
+    - Simpan semua LabelEncoder ke file encoders.pkl menggunakan joblib
+    - Encoder ini digunakan saat prediksi untuk mengubah input user
+
+C3. Training Random Forest (ml/train.py → train_model)
+
+    STEP 1: Inisialisasi Model RandomForestClassifier
+    Parameter yang digunakan:
+    - n_estimators = 100    → Jumlah pohon keputusan (decision tree)
+    - max_depth = 10        → Kedalaman maksimum setiap pohon
+    - min_samples_split = 5 → Minimum sampel untuk split node
+    - min_samples_leaf = 2  → Minimum sampel di leaf node
+    - class_weight = balanced → Otomatis seimbangkan bobot kelas
+    - n_jobs = -1           → Gunakan semua core CPU
+    - random_state = 42     → Seed untuk reproduktifitas
+
+    STEP 2: Proses Training (model.fit)
+    ┌─────────────────────────────────────────────────────────┐
+    │  LOGIKA RANDOM FOREST:                                  │
+    │                                                         │
+    │  1. Random Forest membuat 100 Decision Tree             │
+    │                                                         │
+    │  2. Setiap tree dilatih pada subset data yang berbeda   │
+    │     (Bootstrap Sampling / Bagging):                     │
+    │     - Ambil sampel acak DENGAN pengembalian dari        │
+    │       data training (sekitar 63% data unik per tree)    │
+    │     - Setiap tree melihat data yang sedikit berbeda     │
+    │                                                         │
+    │  3. Pada setiap node di setiap tree:                    │
+    │     - Pilih subset acak dari fitur (sqrt(3) ≈ 1-2 fitur│
+    │       dari 3 fitur: peminatan, brand, posisi)           │
+    │     - Cari split terbaik menggunakan Gini Impurity      │
+    │                                                         │
+    │  4. Gini Impurity Formula:                              │
+    │     Gini = 1 - Σ(pi²)                                  │
+    │     dimana pi = proporsi kelas i pada node tersebut     │
+    │                                                         │
+    │     Contoh: Node dengan 10 speed, 5 control, 5 power   │
+    │     Gini = 1 - ((10/20)² + (5/20)² + (5/20)²)         │
+    │     Gini = 1 - (0.25 + 0.0625 + 0.0625) = 0.625       │
+    │                                                         │
+    │  5. Split yang menurunkan Gini paling banyak dipilih    │
+    │     Contoh: split pada peminatan=speed                  │
+    │     → cabang kiri (speed): Gini rendah (lebih murni)    │
+    │     → cabang kanan (non-speed): dievaluasi lagi         │
+    │                                                         │
+    │  6. Pohon tumbuh hingga:                                │
+    │     - max_depth = 10 tercapai, ATAU                     │
+    │     - min_samples_split < 5 (tidak cukup sampel), ATAU  │
+    │     - min_samples_leaf < 2 (leaf terlalu kecil), ATAU   │
+    │     - Node sudah murni (Gini = 0)                       │
+    │                                                         │
+    │  7. class_weight='balanced' menghitung bobot:            │
+    │     weight_k = n_samples / (n_classes × n_samples_k)    │
+    │     Kelas minoritas mendapat bobot lebih tinggi          │
+    └─────────────────────────────────────────────────────────┘
+
+    STEP 3: Evaluasi Model pada Test Set
+    - Prediksi test set: y_pred = model.predict(X_test)
+    - Hitung metrik:
+      * Accuracy  = jumlah prediksi benar / total prediksi
+      * Precision = TP / (TP + FP) per kelas (weighted average)
+      * Recall    = TP / (TP + FN) per kelas (weighted average)
+      * F1-Score  = 2 × (Precision × Recall) / (Precision + Recall)
+    - Classification Report: metrik detail per kelas
+    - Confusion Matrix: tabel prediksi vs aktual
+
+    STEP 4: Feature Importance
+    - Random Forest menghitung importance setiap fitur:
+      * Berdasarkan total penurunan Gini Impurity yang dihasilkan
+        oleh split pada fitur tersebut, di-rata-rata dari semua tree
+      * Fitur yang menghasilkan split lebih murni → importance tinggi
+    - Hasil: {"peminatan": 0.XX, "brand": 0.XX, "posisi": 0.XX}
+    - Jumlah semua importance = 1.0
+
+    STEP 5: Stratified K-Fold Cross-Validation (5-Fold)
+    - Gabungkan data train + test
+    - Bagi data menjadi 5 fold dengan distribusi kelas proporsional
+    - Untuk setiap fold:
+      * 4 fold sebagai training, 1 fold sebagai testing
+      * Latih model baru, hitung accuracy
+    - Hasil: rata-rata accuracy ± standar deviasi dari 5 fold
+    - Tujuan: memastikan model konsisten, bukan kebetulan
+
+    STEP 6: Simpan Model
+    - Simpan model terlatih ke file model.pkl menggunakan joblib
+    - Invalidasi cache prediksi (agar prediksi berikutnya pakai model baru)
+
+    STEP 7: Simpan Log Training ke Database
+    - INSERT ke tabel training_logs:
+      accuracy, precision, recall, f1_score, cv_mean_accuracy,
+      cv_std_accuracy, dataset_size, n_estimators,
+      classification_report (JSON), confusion_matrix (JSON),
+      feature_importance (JSON)
+
+================================================================================
+BAGIAN D: ALUR PREDIKSI (Inti Sistem)
+================================================================================
+
+D1. User Mengisi Form Prediksi
+    [Frontend: dashboard.html + form.js]
+    1. User memilih 3 parameter dari dropdown:
+       - Peminatan (Gaya Bermain): speed / control / power
+       - Brand (Merek Sepatu): nike / adidas / puma / mizuno / umbro
+       - Posisi (Posisi Pemain): striker / midfielder / defender / goalkeeper
+    2. User klik tombol "Prediksi"
+
+D2. Frontend Kirim Request
+    [form.js → handlePredict()]
+    1. Validasi: semua field harus terisi
+    2. Ambil JWT token dari localStorage
+    3. Kirim POST /api/predict dengan body JSON:
+       {"peminatan": "speed", "brand": "nike", "posisi": "striker"}
+    4. Header: Authorization: Bearer <token>
+
+D3. Backend Menerima Request
+    [routes/prediction.py → controllers/prediction_controller.py]
+    1. Router menerima POST /api/predict
+    2. Request body di-parse ke PredictionRequest (Pydantic model)
+    3. Controller extract user dari JWT token
+    4. Panggil prediction_service.make_prediction()
+
+D4. Validasi Input (prediction_service.py)
+    1. Cek peminatan ∈ {speed, control, power}
+    2. Cek brand ∈ {nike, adidas, puma, mizuno, umbro}
+    3. Cek posisi ∈ {striker, midfielder, defender, goalkeeper}
+    4. Jika tidak valid → kembalikan error
+
+D5. Proses Prediksi ML (ml/predict.py → predict())
+    ┌─────────────────────────────────────────────────────────┐
+    │  LANGKAH DETAIL PREDIKSI:                               │
+    │                                                         │
+    │  1. LOAD MODEL (Singleton Cache)                        │
+    │     - Pertama kali: baca model.pkl dari disk            │
+    │     - Selanjutnya: gunakan cache di memori              │
+    │     - Load juga encoders.pkl                            │
+    │                                                         │
+    │  2. ENCODE INPUT USER                                   │
+    │     Input: peminatan="speed", brand="nike", posisi="striker"│
+    │     Proses: gunakan LabelEncoder yang tersimpan         │
+    │     - encoders["peminatan"].transform(["speed"]) → [2]  │
+    │     - encoders["brand"].transform(["nike"]) → [2]       │
+    │     - encoders["posisi"].transform(["striker"]) → [3]   │
+    │     Hasil: array [[2, 2, 3]] (1 baris, 3 kolom)        │
+    │                                                         │
+    │  3. PREDIKSI KELAS (model.predict)                      │
+    │     ┌───────────────────────────────────────────┐       │
+    │     │ Input [2, 2, 3] dikirim ke 100 tree       │       │
+    │     │                                           │       │
+    │     │ Tree 1: [2,2,3] → speed_boot              │       │
+    │     │ Tree 2: [2,2,3] → speed_boot              │       │
+    │     │ Tree 3: [2,2,3] → power_boot              │       │
+    │     │ Tree 4: [2,2,3] → speed_boot              │       │
+    │     │ ...                                       │       │
+    │     │ Tree 100: [2,2,3] → speed_boot            │       │
+    │     │                                           │       │
+    │     │ Setiap tree menelusuri dari root ke leaf:  │       │
+    │     │   Root: peminatan <= 1.5?                  │       │
+    │     │     Ya → cabang kiri                       │       │
+    │     │     Tidak (speed=2) → cabang kanan         │       │
+    │     │   Node: posisi <= 2.5?                     │       │
+    │     │     Ya → ...                               │       │
+    │     │     Tidak (striker=3) → cabang kanan       │       │
+    │     │   Leaf: speed_boot                         │       │
+    │     │                                           │       │
+    │     │ MAJORITY VOTING:                           │       │
+    │     │ speed_boot: 72 suara                       │       │
+    │     │ power_boot: 18 suara                       │       │
+    │     │ control_boot: 10 suara                     │       │
+    │     │ → Hasil: speed_boot (mayoritas)            │       │
+    │     └───────────────────────────────────────────┘       │
+    │                                                         │
+    │  4. DECODE HASIL                                        │
+    │     - Encoded result (misal: 2)                         │
+    │     - inverse_transform([2]) → "speed_boot"             │
+    │                                                         │
+    │  5. HITUNG PROBABILITAS (model.predict_proba)           │
+    │     - Proporsi suara dari 100 tree:                     │
+    │       control_boot: 10/100 = 10.0%                      │
+    │       power_boot:   18/100 = 18.0%                      │
+    │       speed_boot:   72/100 = 72.0%                      │
+    │     - Probabilitas = persentase tree yang memilih kelas  │
+    │                                                         │
+    │  6. AMBIL FEATURE IMPORTANCE                            │
+    │     - Dari model.feature_importances_                   │
+    │     - Contoh: peminatan=0.45, brand=0.25, posisi=0.30   │
+    │     - Artinya: gaya bermain paling berpengaruh (45%)    │
+    └─────────────────────────────────────────────────────────┘
+
+D6. Generate Penjelasan AI (ml/predict.py → _generate_explanation)
+    1. Sortir fitur berdasarkan importance (tertinggi dulu)
+    2. Bangun teks penjelasan dalam Bahasa Indonesia:
+       - Kalimat 1: Hasil prediksi + tingkat kepercayaan
+         "Berdasarkan analisis model Random Forest, sistem merekomendasikan
+          Speed Boot dengan tingkat kepercayaan 72.0%."
+       - Kalimat 2: Ringkasan input user
+         "Rekomendasi ini didasarkan pada preferensi gaya bermain Anda yaitu
+          kecepatan (speed), merek pilihan Nike, dan posisi bermain sebagai
+          Striker (Penyerang)."
+       - Kalimat 3: Rekomendasi sepatu spesifik (dari katalog produk)
+         "Beberapa seri sepatu Nike yang direkomendasikan antara lain
+          Nike Mercurial Vapor 15, Nike Mercurial Superfly 9, dan ..."
+       - Kalimat 4: Faktor paling berpengaruh
+         "Faktor yang paling berpengaruh adalah Gaya Bermain (Peminatan)
+          dengan kontribusi sebesar 45.0%."
+       - Kalimat 5: Faktor pendukung
+         "Faktor pendukung lainnya: Posisi Pemain (30.0%), Merek (25.0%)."
+
+D7. Ambil Rekomendasi Produk (prediction_service.py → get_recommended_products)
+    1. Baca katalog produk dari dataset/produk_sepatu.json
+    2. Filter produk berdasarkan:
+       - predicted_class (speed_boot/control_boot/power_boot)
+       - brand pilihan user
+    3. Hitung Match Score untuk setiap produk:
+       ┌───────────────────────────────────────────────────┐
+       │ Match Score = (40% × Class Score)                 │
+       │             + (30% × Peminatan Score)             │
+       │             + (20% × Position Score)              │
+       │             + (10% × Overall Quality Bonus)       │
+       │                                                   │
+       │ Setiap score dihitung dari stats produk:          │
+       │ (speed, control, power, touch, weight, durability)│
+       │ dengan bobot berbeda tergantung konteks.          │
+       │                                                   │
+       │ Contoh untuk speed_boot:                          │
+       │ Class Score = speed×0.35 + weight×0.25 +          │
+       │              control×0.10 + touch×0.10 +          │
+       │              power×0.10 + durability×0.10         │
+       └───────────────────────────────────────────────────┘
+    4. Ambil SEMUA produk dari brand pilihan user (primary)
+    5. Ambil top 2 produk dari brand lain (secondary)
+    6. Sortir berdasarkan match_score (tertinggi di atas)
+    7. Tambahkan rank dan label (Best Match, dll.)
+
+D8. Simpan Hasil ke Database
+    1. INSERT ke tabel predictions:
+       user_id, peminatan, brand, posisi, predicted_class,
+       probabilities (JSON), feature_importance (JSON), explanation
+    2. Commit transaksi
+
+D9. Kirim Response ke Frontend
+    Response JSON berisi:
+    {
+      "predicted_class": "speed_boot",
+      "predicted_label": "Speed Boot - Sepatu untuk kecepatan tinggi",
+      "probabilities": {"speed_boot": 72.0, "power_boot": 18.0, "control_boot": 10.0},
+      "feature_importance": {"peminatan": 0.45, "posisi": 0.30, "brand": 0.25},
+      "explanation": "Berdasarkan analisis model Random Forest...",
+      "input": {"peminatan": "speed", "brand": "nike", "posisi": "striker"},
+      "recommended_products": [
+        {
+          "name": "Nike Mercurial Vapor 15",
+          "brand": "Nike",
+          "price": "Rp 3.500.000",
+          "stats": {"speed": 95, "control": 78, ...},
+          "match_score": 89.5,
+          "rank": 1,
+          "is_primary": true
+        }, ...
+      ]
+    }
+
+D10. Frontend Menampilkan Hasil
+     [result.html + result.js]
+     1. Simpan data prediksi ke localStorage
+     2. Redirect ke halaman /result
+     3. Render komponen:
+        - Ikon & nama kelas prediksi (Speed Boot ⚡)
+        - Gambar sepatu sesuai kategori
+        - Ringkasan input user
+        - Bar chart probabilitas kelas (animasi)
+        - Bar chart feature importance (animasi)
+        - Teks penjelasan AI (dalam Bahasa Indonesia)
+        - Grid kartu produk rekomendasi:
+          * Gambar produk, nama, harga
+          * Badge brand dengan warna khas
+          * Badge match score (Sangat Cocok/Cocok/Cukup Cocok)
+          * Badge ranking (🥇🥈🥉)
+          * Stat bars animasi (speed, control, power, dll.)
+          * Produk primary (brand user) di atas
+          * Produk secondary (brand lain) di bawah
+
+================================================================================
+BAGIAN E: ALUR RIWAYAT PREDIKSI
+================================================================================
+
+E1. Lihat Riwayat (GET /api/history)
+    1. Frontend request dengan Bearer token
+    2. Backend query tabel predictions WHERE user_id = <user>
+    3. Kembalikan list prediksi, terbaru di atas
+    4. Frontend render tabel riwayat
+
+E2. Hapus Riwayat (DELETE /api/history/<id>)
+    1. Cek kepemilikan: prediction.user_id == requesting user
+    2. DELETE dari tabel predictions
+    3. Frontend refresh tabel
+
+E3. Statistik User (GET /api/history/stats)
+    - Total prediksi user
+    - Distribusi kelas (berapa kali speed/control/power)
+
+================================================================================
+BAGIAN F: ALUR ADMIN
+================================================================================
+
+F1. Upload Dataset CSV (POST /api/admin/dataset/upload)
+    1. Admin upload file CSV
+    2. Validasi header: peminatan, brand, posisi, label_sepatu
+    3. Validasi setiap baris terhadap nilai yang diperbolehkan
+    4. INSERT ke tabel dataset_records
+    5. Sync ke file CSV (untuk training berikutnya)
+
+F2. Train Model → Lihat Bagian C
+
+F3. Kelola User (GET /api/admin/users, DELETE /api/admin/users/<id>)
+    - Lihat semua user terdaftar
+    - Hapus user (cascade delete prediksi mereka)
+    - Admin tidak bisa dihapus
+
+F4. Lihat Training Logs (GET /api/admin/training-logs)
+    - Riwayat semua sesi training
+    - Metrik: accuracy, precision, recall, f1, CV scores
+
+================================================================================
+BAGIAN G: RINGKASAN ARSITEKTUR
+================================================================================
+
+Frontend (HTML/CSS/JS)          Backend (FastAPI/Python)
+─────────────────────          ──────────────────────────
+login.html ─────────┐
+register.html ──────┤         routes/ ──→ controllers/ ──→ services/
+dashboard.html ─────┤  HTTP     │              │               │
+result.html ────────┼──────→  auth.py    auth_ctrl    auth_service
+history.html ───────┤         predict.py  pred_ctrl    pred_service
+admin.html ─────────┘         history.py  hist_ctrl    hist_service
+                              admin.py    admin_ctrl   admin_service
+                                                           │
+                                                      ml/predict.py
+                                                      ml/train.py
+                                                      ml/preprocessing.py
+                                                           │
+                                              ┌────────────┼────────────┐
+                                          model.pkl   encoders.pkl  dataset.csv
+                                              │
+                                         MySQL Database
+                                    (users, predictions,
+                                     training_logs, dataset_records)
+
+================================================================================
+BAGIAN H: FLOW DIAGRAM PREDIKSI (Ringkasan)
+================================================================================
+
+User Input                  Backend Processing                 Output
+──────────                  ──────────────────                 ──────
+                                                              
+peminatan ──┐               ┌─ Validasi Input                 
+brand ──────┼─→ POST ──→    ├─ Load Model (cache)             
+posisi ─────┘   /api/       ├─ Encode Input                   ┌─ predicted_class
+                predict     ├─ 100 Trees Voting ──→ Majority ─┼─ probabilities
+                            ├─ predict_proba ──────────────────┼─ feature_importance
+                            ├─ Generate Explanation ───────────┼─ explanation
+                            ├─ Match Score Products ───────────┼─ recommended_products
+                            └─ Save to DB                      └─ (saved to history)
+
+================================================================================

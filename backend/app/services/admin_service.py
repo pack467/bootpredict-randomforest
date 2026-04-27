@@ -351,3 +351,91 @@ async def get_dataset_records():
                     "created_at": str(row["created_at"]) if row["created_at"] else None
                 })
             return result
+
+
+async def clear_dataset():
+    """
+    Clear all dataset records from the database and reset the CSV file.
+
+    Returns:
+        dict: Result with success status
+    """
+    try:
+        pool = get_pool()
+        async with pool.acquire() as conn:
+            async with conn.cursor() as cur:
+                # Get count before deleting
+                await cur.execute("SELECT COUNT(*) as total FROM dataset_records")
+                count = (await cur.fetchone())["total"]
+
+                # Delete all dataset records
+                await cur.execute("DELETE FROM dataset_records")
+            await conn.commit()
+
+        # Clear the CSV file (write header only)
+        import os
+        os.makedirs(os.path.dirname(DATASET_CSV_PATH), exist_ok=True)
+        with open(DATASET_CSV_PATH, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=["peminatan", "brand", "posisi", "label_sepatu"])
+            writer.writeheader()
+
+        return {
+            "success": True,
+            "message": f"Berhasil menghapus {count} data dari dataset"
+        }
+    except Exception as e:
+        return {"success": False, "message": f"Error menghapus dataset: {str(e)}"}
+
+
+async def delete_trained_model():
+    """
+    Delete the trained model files (.pkl) and clear training logs.
+    After this, the admin must retrain the model before predictions will work.
+
+    Returns:
+        dict: Result with success status
+    """
+    import os
+    from app.config import MODEL_PATH, ENCODERS_PATH
+
+    try:
+        deleted_files = []
+
+        # Delete model file
+        if os.path.exists(MODEL_PATH):
+            os.remove(MODEL_PATH)
+            deleted_files.append("model.pkl")
+
+        # Delete encoders file
+        if os.path.exists(ENCODERS_PATH):
+            os.remove(ENCODERS_PATH)
+            deleted_files.append("encoders.pkl")
+
+        # Clear training logs from database
+        pool = get_pool()
+        async with pool.acquire() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute("SELECT COUNT(*) as total FROM training_logs")
+                log_count = (await cur.fetchone())["total"]
+                await cur.execute("DELETE FROM training_logs")
+            await conn.commit()
+
+        if not deleted_files and log_count == 0:
+            return {
+                "success": True,
+                "message": "Tidak ada model atau log training yang ditemukan"
+            }
+
+        msg_parts = []
+        if deleted_files:
+            msg_parts.append(f"File dihapus: {', '.join(deleted_files)}")
+        if log_count > 0:
+            msg_parts.append(f"{log_count} log training dihapus")
+
+        return {
+            "success": True,
+            "message": "Model berhasil direset. " + ". ".join(msg_parts)
+        }
+    except Exception as e:
+        return {"success": False, "message": f"Error menghapus model: {str(e)}"}
+

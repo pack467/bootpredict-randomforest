@@ -24,7 +24,7 @@ async def init_pool():
         user=DB_USER,
         password=DB_PASSWORD,
         db=DB_NAME,
-        autocommit=False,
+        autocommit=True,
         minsize=2,
         maxsize=10,
         charset="utf8mb4",

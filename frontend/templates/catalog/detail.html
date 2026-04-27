@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}{{ shoe.name }} - Football Boots Classifier{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/catalog" class="text-decoration-none text-muted">Katalog</a></li>
+            <li class="breadcrumb-item"><a href="/catalog?brand={{ shoe.brand }}" class="text-decoration-none text-muted">{{ shoe.brand|title }}</a></li>
+            <li class="breadcrumb-item active fw-600 text-primary" aria-current="page">{{ shoe.name }}</li>
+        </ol>
+    </nav>
+
+    <!-- Product Detail Section -->
+    <div class="glass-card p-0 overflow-hidden mb-5 animate-fade-up">
+        <div class="row g-0">
+            <!-- Image Column -->
+            <div class="col-lg-6 bg-white position-relative d-flex align-items-center justify-content-center" style="min-height: 400px; padding: 3rem;">
+                <!-- Badges -->
+                <div class="position-absolute top-0 start-0 p-4 z-2">
+                    <span class="badge-custom badge-{{ shoe.category.split('_')[0] if '_' in shoe.category else 'primary' }} shadow-sm fs-6 px-3 py-2">
+                        {{ shoe.category|replace('_', ' ')|title }}
+                    </span>
+                </div>
+                
+                {% if shoe.image_filename %}
+                    {% if shoe.image_filename.startswith('/static/') %}
+                        <img src="{{ shoe.image_filename }}" alt="{{ shoe.name }}" class="img-fluid object-fit-contain w-100 h-100 drop-shadow-lg transition-transform duration-500 transform-hover-scale" style="max-height: 500px;" loading="lazy">
+                    {% else %}
+                        <img src="/uploads/{{ shoe.image_filename }}" alt="{{ shoe.name }}" class="img-fluid object-fit-contain w-100 h-100 drop-shadow-lg transition-transform duration-500 transform-hover-scale" style="max-height: 500px;" loading="lazy">
+                    {% endif %}
+                {% else %}
+                    <div class="text-center text-muted opacity-25">
+                        <i class="bi bi-image" style="font-size: 8rem;"></i>
+                        <p class="mt-3 fs-5">Gambar tidak tersedia</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Info Column -->
+            <div class="col-lg-6 p-4 p-xl-5 d-flex flex-column bg-glass">
+                <div class="mb-auto">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-uppercase tracking-wider fw-800 text-primary-custom letter-spacing-2">{{ shoe.brand }}</span>
+                        {% if shoe.stock > 0 %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-600"><i class="bi bi-check-circle me-1"></i> Tersedia ({{ shoe.stock }})</span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2 fw-600"><i class="bi bi-x-circle me-1"></i> Stok Habis</span>
+                        {% endif %}
+                    </div>
+                    
+                    <h1 class="display-6 fw-800 text-primary-darker mb-4">{{ shoe.name }}</h1>
+                    
+                    <div class="fs-2 fw-800 text-accent-gold mb-4 pb-4 border-bottom border-light">
+                        Rp {{ "{:,.0f}".format(shoe.price).replace(',', '.') }}
+                    </div>
+
+                    {% if shoe.description %}
+                    <div class="mb-4">
+                        <h6 class="fw-700 text-secondary mb-3 text-uppercase letter-spacing-1 small">Deskripsi Produk</h6>
+                        <p class="text-muted lh-lg">{{ shoe.description }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if shoe.sizes_available %}
+                    <div class="mb-5">
+                        <h6 class="fw-700 text-secondary mb-3 text-uppercase letter-spacing-1 small">Ukuran Tersedia (EU)</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for size in shoe.sizes_available %}
+                                <div class="size-badge">{{ size }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommendations Section (AI Powered) -->
+    <div class="mt-5 pt-4 border-top border-light animate-fade-up delay-200">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h3 class="fw-800 text-primary-darker m-0 d-flex align-items-center gap-2">
+                    <i class="bi bi-stars text-accent-gold"></i> Rekomendasi AI
+                </h3>
+                <p class="text-muted-custom mt-2 mb-0">Sepatu serupa berdasarkan kategori, brand, harga, dan deskripsi.</p>
+            </div>
+        </div>
+
+        {% if recommendations %}
+            <div class="row g-4">
+                {% for rec in recommendations %}
+                <div class="col-md-6 col-xl-3">
+                    <div class="glass-card product-card h-100 p-0 border-light d-flex flex-column text-decoration-none position-relative overflow-hidden group recommendation-card">
+                        
+                        <!-- AI Match Badge -->
+                        <div class="position-absolute top-0 end-0 p-3 z-2 pointer-events-none">
+                            <span class="badge bg-glass text-primary-darker border border-primary-subtle rounded-pill shadow-sm px-2 py-1 fw-700 d-flex align-items-center gap-1" style="backdrop-filter: blur(4px);">
+                                <i class="bi bi-cpu-fill text-accent"></i> {{ rec.match_score }}% Match
+                            </span>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="product-img-wrapper position-relative bg-white" style="height: 180px; padding: 1.5rem;">
+                            {% if rec.image_filename %}
+                                {% if rec.image_filename is string and rec.image_filename.startswith('/static/') %}
+                                    <img src="{{ rec.image_filename }}" alt="{{ rec.name }}" class="img-fluid object-fit-contain w-100 h-100 transition-transform duration-300 transform-hover-scale" loading="lazy">
+                                {% else %}
+                                    <img src="/uploads/{{ rec.image_filename }}" alt="{{ rec.name }}" class="img-fluid object-fit-contain w-100 h-100 transition-transform duration-300 transform-hover-scale" loading="lazy">
+                                {% endif %}
+                            {% else %}
+                                <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light rounded text-muted">
+                                    <i class="bi bi-image fs-3 opacity-25"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="p-3 d-flex flex-column flex-grow-1 bg-glass border-top border-light">
+                            <div class="text-uppercase tracking-wider small fw-700 text-muted mb-1" style="font-size: 0.7rem;">{{ rec.brand }} • {{ rec.category|replace('_', ' ')|title }}</div>
+                            <h6 class="fw-800 text-primary-darker mb-2 text-truncate-2" style="font-size: 0.95rem; min-height: 2.2rem;">{{ rec.name }}</h6>
+                            
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <div class="fw-800 text-accent-gold" style="font-size: 0.9rem;">Rp {{ "{:,.0f}".format(rec.price).replace(',', '.') }}</div>
+                                <a href="/catalog/{{ rec.id }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Lihat</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-custom alert-warning bg-warning-subtle text-warning-emphasis border-warning-subtle">
+                <i class="bi bi-info-circle me-2"></i> Belum ada rekomendasi sepatu yang cukup mirip saat ini.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/catalog.js"></script>
+{% endblock %}

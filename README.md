@@ -212,10 +212,10 @@ cd prediksi_sepatu
 
 ### Langkah 3: Buat Virtual Environment Python
 
-Buka **Command Prompt** atau **PowerShell**, lalu navigasi ke folder proyek:
+Buka **Git Bash** terminal, lalu navigasi ke folder proyek:
 
 ```bash
-cd F:\Jokian\prediksi_sepatu
+cd /f/Jokian/prediksi_sepatu
 ```
 
 Buat virtual environment baru:
@@ -224,30 +224,14 @@ python -m venv venv
 ```
 
 Aktifkan virtual environment:
-
-**Windows (Command Prompt):**
 ```bash
-venv\Scripts\activate
-```
-
-**Windows (PowerShell):**
-```powershell
-.\venv\Scripts\Activate.ps1
-```
-
-**Linux / macOS:**
-```bash
-source venv/bin/activate
+source venv/Scripts/activate
 ```
 
 > ✅ Jika berhasil, akan muncul `(venv)` di awal baris terminal Anda:
 > ```
-> (venv) F:\Jokian\prediksi_sepatu>
-> ```
-
-> ⚠️ **Jika PowerShell menolak menjalankan script**, jalankan perintah berikut terlebih dahulu:
-> ```powershell
-> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+> (venv) user@PC MINGW64 /f/Jokian/prediksi_sepatu
+> $
 > ```
 
 ---
@@ -260,6 +244,8 @@ Pastikan virtual environment **sudah aktif** (ada tulisan `(venv)`), lalu jalank
 cd backend
 pip install -r requirements.txt
 ```
+
+> 💡 Jika sudah berada di folder `backend/`, cukup jalankan `pip install -r requirements.txt` saja.
 
 **Daftar library yang akan diinstall:**
 
@@ -295,7 +281,7 @@ Pastikan semua library di atas muncul di daftar.
 Proyek ini sudah menyertakan dataset di folder `dataset/`. Jika ingin men-generate ulang dataset dummy:
 
 ```bash
-cd backend
+# Pastikan berada di folder backend
 python generate_dataset.py
 ```
 
@@ -309,19 +295,21 @@ Pastikan Anda berada di folder `backend/` dan virtual environment aktif:
 
 ```bash
 cd backend
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn app.main:app --reload --port 8000
 ```
 
 **Penjelasan perintah:**
 | Parameter | Fungsi |
 |-----------|--------|
+| `python -m uvicorn` | Menjalankan uvicorn melalui Python module (lebih reliable) |
 | `app.main:app` | Menjalankan objek `app` dari file `app/main.py` |
 | `--reload` | Auto-restart server saat ada perubahan kode |
-| `--host 0.0.0.0` | Server dapat diakses dari semua network interface |
 | `--port 8000` | Server berjalan di port 8000 |
 
 **Jika berhasil, akan muncul output seperti ini:**
 ```
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+
 ============================================================
   Football Boots Classification System - Starting...
 ============================================================
@@ -329,14 +317,14 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 [DB] All tables created successfully.
 [DB] Admin user already exists.
 [DB] Connection pool created: root@localhost:3306/football_boots_db
-[ML] No trained model found. Admin must train the model first.
+[ML] Trained model found: .../backend/app/ml/model.pkl
 
 [OK] Application ready!
-Frontend directory: F:\Jokian\prediksi_sepatu\frontend
+Frontend directory: .../frontend
 Open http://localhost:8000 in your browser
 ============================================================
 
-INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Application startup complete.
 ```
 
 > ⚠️ **Jangan tutup terminal ini!** Biarkan terminal tetap berjalan selama menggunakan aplikasi.
@@ -540,7 +528,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 **Solusi:**
 Gunakan port lain saat menjalankan server:
 ```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 9000
+python -m uvicorn app.main:app --reload --port 9000
 ```
 Lalu akses `http://localhost:9000`
 
@@ -553,26 +541,28 @@ Lalu akses `http://localhost:9000`
 
 ## 📋 Ringkasan Perintah Cepat (Quick Reference)
 
+Semua perintah di bawah menggunakan **Git Bash** terminal.
+
 ```bash
 # ========================================
-# SETUP PERTAMA KALI
+# SETUP PERTAMA KALI (Git Bash)
 # ========================================
 
 # 1. Masuk ke folder proyek
-cd F:\Jokian\prediksi_sepatu
+cd /f/Jokian/prediksi_sepatu
 
 # 2. Buat virtual environment
 python -m venv venv
 
-# 3. Aktifkan virtual environment (Windows CMD)
-venv\Scripts\activate
+# 3. Aktifkan virtual environment
+source venv/Scripts/activate
 
 # 4. Install dependencies
 cd backend
 pip install -r requirements.txt
 
 # 5. Jalankan server
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn app.main:app --reload --port 8000
 
 # 6. Buka browser → http://localhost:8000
 # 7. Login admin → admin / admin123
@@ -584,15 +574,15 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 # MENJALANKAN SETELAH SETUP (sehari-hari)
 # ========================================
 
-# 1. Buka terminal / Command Prompt
-cd F:\Jokian\prediksi_sepatu
+# 1. Buka Git Bash terminal
+cd /f/Jokian/prediksi_sepatu
 
 # 2. Aktifkan virtual environment
-venv\Scripts\activate
+source venv/Scripts/activate
 
 # 3. Jalankan server
 cd backend
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn app.main:app --reload --port 8000
 
 # 4. Buka browser → http://localhost:8000
 ```

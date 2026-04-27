@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}Katalog Sepatu - Football Boots Classifier{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <!-- Hero Section -->
+    <div class="hero-greeting mb-5 animate-fade-up">
+        <div class="row align-items-center position-relative z-2">
+            <div class="col-lg-7">
+                <h1 class="fw-800 mb-3 display-5">Katalog Sepatu</h1>
+                <p class="fs-5 opacity-85 mb-0">Temukan sepatu yang sempurna untuk gaya bermain dan posisi Anda. Koleksi lengkap dari berbagai brand ternama.</p>
+            </div>
+            <div class="col-lg-5 mt-4 mt-lg-0">
+                <form action="/catalog" method="GET" class="position-relative" id="search-form">
+                    <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border border-light">
+                        <span class="input-group-text bg-white border-0 ps-4">
+                            <i class="bi bi-search text-primary-custom"></i>
+                        </span>
+                        <input type="text" name="search" 
+                               class="form-control border-0 py-3" 
+                               placeholder="Cari sepatu, brand, atau kategori..." 
+                               value="{{ filters.search or '' }}"
+                               id="catalog-search-input"
+                               autocomplete="off">
+                        {% if filters.search %}
+                        <a href="/catalog{% if filters.category %}?category={{ filters.category }}{% endif %}{% if filters.brand %}{% if filters.category %}&{% else %}?{% endif %}brand={{ filters.brand }}{% endif %}" 
+                           class="input-group-text bg-white border-0 text-muted pe-3" title="Hapus pencarian">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary-custom px-4 rounded-0" style="border-radius: 0 50rem 50rem 0 !important;">
+                            Cari
+                        </button>
+                    </div>
+                    <!-- Preserve active filters -->
+                    {% if filters.category %}<input type="hidden" name="category" value="{{ filters.category }}">{% endif %}
+                    {% if filters.brand %}<input type="hidden" name="brand" value="{{ filters.brand }}">{% endif %}
+                    {% if filters.sort %}<input type="hidden" name="sort" value="{{ filters.sort }}">{% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brand Filter Pills (Horizontal) -->
+    <div class="mb-4 animate-fade-up delay-100">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="text-muted fw-600 small text-uppercase me-2"><i class="bi bi-tag me-1"></i>Brand:</span>
+            <a href="/catalog{% if filters.search %}?search={{ filters.search }}{% endif %}{% if filters.category %}{% if filters.search %}&{% else %}?{% endif %}category={{ filters.category }}{% endif %}{% if filters.sort %}{% if filters.search or filters.category %}&{% else %}?{% endif %}sort={{ filters.sort }}{% endif %}" 
+               class="brand-pill {% if not filters.brand %}active{% endif %}">
+                <i class="bi bi-grid-3x3-gap-fill me-1"></i> Semua
+            </a>
+            {% for brand in available_brands %}
+            <a href="/catalog?brand={{ brand }}{% if filters.search %}&search={{ filters.search }}{% endif %}{% if filters.category %}&category={{ filters.category }}{% endif %}{% if filters.sort %}&sort={{ filters.sort }}{% endif %}" 
+               class="brand-pill {% if filters.brand == brand %}active{% endif %}">
+                {{ brand|title }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3 animate-fade-up delay-100">
+            <div class="glass-card p-4 position-sticky" style="top: 1rem; z-index: 10;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-700 m-0"><i class="bi bi-funnel me-2 text-primary-custom"></i>Filter</h5>
+                    <a href="/catalog" class="text-muted small text-decoration-none hover-primary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                    </a>
+                </div>
+                
+                <form action="/catalog" method="GET" id="filter-form">
+                    <!-- Preserve search -->
+                    {% if filters.search %}<input type="hidden" name="search" value="{{ filters.search }}">{% endif %}
+                    {% if filters.brand %}<input type="hidden" name="brand" value="{{ filters.brand }}">{% endif %}
+                    
+                    <!-- Category Filter -->
+                    <div class="mb-4">
+                        <label class="form-label fw-600 small text-uppercase text-muted letter-spacing-1">
+                            <i class="bi bi-bookmark me-1"></i>Kategori
+                        </label>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="/catalog{% if filters.search %}?search={{ filters.search }}{% endif %}{% if filters.brand %}{% if filters.search %}&{% else %}?{% endif %}brand={{ filters.brand }}{% endif %}{% if filters.sort %}{% if filters.search or filters.brand %}&{% else %}?{% endif %}sort={{ filters.sort }}{% endif %}" 
+                               class="category-filter-item {% if not filters.category %}active{% endif %}">
+                                <i class="bi bi-grid-3x3-gap"></i>
+                                <span>Semua Kategori</span>
+                            </a>
+                            {% for cat in available_categories %}
+                            <a href="/catalog?category={{ cat }}{% if filters.search %}&search={{ filters.search }}{% endif %}{% if filters.brand %}&brand={{ filters.brand }}{% endif %}{% if filters.sort %}&sort={{ filters.sort }}{% endif %}" 
+                               class="category-filter-item {% if filters.category == cat %}active{% endif %}">
+                                {% if 'speed' in cat %}
+                                    <i class="bi bi-lightning-charge"></i>
+                                {% elif 'control' in cat %}
+                                    <i class="bi bi-bullseye"></i>
+                                {% elif 'power' in cat %}
+                                    <i class="bi bi-fire"></i>
+                                {% else %}
+                                    <i class="bi bi-bookmark"></i>
+                                {% endif %}
+                                <span>{{ cat|replace('_', ' ')|title }}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Price Range -->
+                    <div class="mb-4">
+                        <label class="form-label fw-600 small text-uppercase text-muted letter-spacing-1">
+                            <i class="bi bi-currency-dollar me-1"></i>Rentang Harga
+                        </label>
+                        <div class="d-flex gap-2 align-items-center">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text border-light bg-transparent text-muted" style="font-size: 0.75rem;">Rp</span>
+                                <input type="number" name="min_price" class="form-control border-light" 
+                                       placeholder="Min" 
+                                       value="{{ filters.min_price|int if filters.min_price else '' }}"
+                                       step="100000" min="0">
+                            </div>
+                            <span class="text-muted">-</span>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text border-light bg-transparent text-muted" style="font-size: 0.75rem;">Rp</span>
+                                <input type="number" name="max_price" class="form-control border-light" 
+                                       placeholder="Max" 
+                                       value="{{ filters.max_price|int if filters.max_price else '' }}"
+                                       step="100000" min="0">
+                            </div>
+                        </div>
+                        {% if price_range %}
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="text-muted" style="font-size: 0.7rem;">Min: Rp {{ "{:,.0f}".format(price_range.min).replace(',', '.') }}</small>
+                            <small class="text-muted" style="font-size: 0.7rem;">Max: Rp {{ "{:,.0f}".format(price_range.max).replace(',', '.') }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Sort -->
+                    <div class="mb-4">
+                        <label class="form-label fw-600 small text-uppercase text-muted letter-spacing-1">
+                            <i class="bi bi-sort-down me-1"></i>Urutkan
+                        </label>
+                        <select name="sort" class="form-select form-select-sm border-light">
+                            <option value="" {% if not filters.sort %}selected{% endif %}>Terbaru</option>
+                            <option value="price_asc" {% if filters.sort == 'price_asc' %}selected{% endif %}>Harga: Rendah ke Tinggi</option>
+                            <option value="price_desc" {% if filters.sort == 'price_desc' %}selected{% endif %}>Harga: Tinggi ke Rendah</option>
+                            <option value="name_asc" {% if filters.sort == 'name_asc' %}selected{% endif %}>Nama: A-Z</option>
+                            <option value="name_desc" {% if filters.sort == 'name_desc' %}selected{% endif %}>Nama: Z-A</option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary-custom py-2 rounded-pill">
+                            <i class="bi bi-funnel me-1"></i>Terapkan Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="col-lg-9 animate-fade-up delay-200">
+            <!-- Active Filters & Results Count Bar -->
+            <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="text-muted small">
+                        Menampilkan <strong class="text-primary-custom">{{ pagination.total }}</strong> sepatu
+                    </span>
+                    
+                    {% if filters.search or filters.category or filters.brand or filters.min_price or filters.max_price %}
+                        <span class="text-muted mx-1">|</span>
+                        {% if filters.search %}
+                            <span class="active-filter-badge">
+                                <i class="bi bi-search"></i> "{{ filters.search }}"
+                                <a href="/catalog{% if filters.category %}?category={{ filters.category }}{% endif %}{% if filters.brand %}{% if filters.category %}&{% else %}?{% endif %}brand={{ filters.brand }}{% endif %}" 
+                                   class="ms-1 text-decoration-none" title="Hapus">×</a>
+                            </span>
+                        {% endif %}
+                        {% if filters.category %}
+                            <span class="active-filter-badge active-filter-badge-category">
+                                {% if 'speed' in filters.category %}<i class="bi bi-lightning-charge"></i>
+                                {% elif 'control' in filters.category %}<i class="bi bi-bullseye"></i>
+                                {% elif 'power' in filters.category %}<i class="bi bi-fire"></i>
+                                {% endif %}
+                                {{ filters.category|replace('_', ' ')|title }}
+                                <a href="/catalog{% if filters.search %}?search={{ filters.search }}{% endif %}{% if filters.brand %}{% if filters.search %}&{% else %}?{% endif %}brand={{ filters.brand }}{% endif %}" 
+                                   class="ms-1 text-decoration-none" title="Hapus">×</a>
+                            </span>
+                        {% endif %}
+                        {% if filters.brand %}
+                            <span class="active-filter-badge active-filter-badge-brand">
+                                <i class="bi bi-tag"></i> {{ filters.brand|title }}
+                                <a href="/catalog{% if filters.search %}?search={{ filters.search }}{% endif %}{% if filters.category %}{% if filters.search %}&{% else %}?{% endif %}category={{ filters.category }}{% endif %}" 
+                                   class="ms-1 text-decoration-none" title="Hapus">×</a>
+                            </span>
+                        {% endif %}
+                        {% if filters.min_price or filters.max_price %}
+                            <span class="active-filter-badge">
+                                <i class="bi bi-currency-dollar"></i>
+                                {% if filters.min_price %}Rp {{ "{:,.0f}".format(filters.min_price).replace(',', '.') }}{% else %}0{% endif %}
+                                -
+                                {% if filters.max_price %}Rp {{ "{:,.0f}".format(filters.max_price).replace(',', '.') }}{% else %}∞{% endif %}
+                            </span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <!-- Sort (Quick) for Mobile -->
+                <div class="d-lg-none">
+                    <select class="form-select form-select-sm border-light" id="quick-sort-mobile" style="min-width: 180px;">
+                        <option value="" {% if not filters.sort %}selected{% endif %}>Terbaru</option>
+                        <option value="price_asc" {% if filters.sort == 'price_asc' %}selected{% endif %}>Harga ↑</option>
+                        <option value="price_desc" {% if filters.sort == 'price_desc' %}selected{% endif %}>Harga ↓</option>
+                        <option value="name_asc" {% if filters.sort == 'name_asc' %}selected{% endif %}>A-Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grid -->
+            {% if shoes %}
+                <div class="row g-4 mb-5" id="shoes-grid">
+                    {% for shoe in shoes %}
+                    <div class="col-md-6 col-xl-4 shoe-card-wrapper">
+                        <div class="glass-card product-card h-100 p-0 border-light d-flex flex-column text-decoration-none position-relative overflow-hidden group">
+                            
+                            <!-- Badges -->
+                            <div class="position-absolute top-0 start-0 p-3 z-2 w-100 d-flex justify-content-between align-items-start pointer-events-none">
+                                <span class="badge-custom badge-{{ shoe.category.split('_')[0] if '_' in shoe.category else 'primary' }} shadow-sm">
+                                    {% if 'speed' in shoe.category %}<i class="bi bi-lightning-charge me-1"></i>
+                                    {% elif 'control' in shoe.category %}<i class="bi bi-bullseye me-1"></i>
+                                    {% elif 'power' in shoe.category %}<i class="bi bi-fire me-1"></i>
+                                    {% endif %}
+                                    {{ shoe.category|replace('_', ' ')|title }}
+                                </span>
+                                {% if shoe.stock <= 5 and shoe.stock > 0 %}
+                                    <span class="badge bg-warning text-dark border border-warning rounded-pill px-2 py-1 shadow-sm" style="font-size: 0.65rem;">Sisa {{ shoe.stock }}!</span>
+                                {% elif shoe.stock == 0 %}
+                                    <span class="badge bg-danger text-white border border-danger rounded-pill px-2 py-1 shadow-sm" style="font-size: 0.65rem;">Habis</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Image -->
+                            <div class="product-img-wrapper position-relative bg-white" style="height: 220px; padding: 2rem;">
+                                {% if shoe.image_filename %}
+                                    {% if shoe.image_filename.startswith('/static/') %}
+                                        <img src="{{ shoe.image_filename }}" alt="{{ shoe.name }}" class="img-fluid object-fit-contain w-100 h-100 transition-transform duration-300 transform-hover-scale" loading="lazy">
+                                    {% else %}
+                                        <img src="/uploads/{{ shoe.image_filename }}" alt="{{ shoe.name }}" class="img-fluid object-fit-contain w-100 h-100 transition-transform duration-300 transform-hover-scale" loading="lazy">
+                                    {% endif %}
+                                {% else %}
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light rounded text-muted">
+                                        <i class="bi bi-image fs-1 opacity-25"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="p-4 d-flex flex-column flex-grow-1 bg-glass border-top border-light">
+                                <div class="text-uppercase tracking-wider small fw-700 text-muted mb-1">{{ shoe.brand }}</div>
+                                <h5 class="fw-800 text-primary-darker mb-2 text-truncate-2" style="font-size: 1.1rem; min-height: 2.6rem;">{{ shoe.name }}</h5>
+                                
+                                <div class="mt-auto">
+                                    <div class="fs-5 fw-800 text-accent-gold mb-3">Rp {{ "{:,.0f}".format(shoe.price).replace(',', '.') }}</div>
+                                    <a href="/catalog/{{ shoe.id }}" class="btn btn-primary-custom w-100 py-2 fs-6 rounded-pill d-flex align-items-center justify-content-center gap-2">
+                                        Lihat Detail <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if pagination.pages > 1 %}
+                <nav aria-label="Catalog pagination" class="mt-5">
+                    <ul class="pagination pagination-custom justify-content-center">
+                        <li class="page-item {% if pagination.page <= 1 %}disabled{% endif %}">
+                            <a class="page-link shadow-sm" href="/catalog?page={{ pagination.page - 1 }}{% if filters.search %}&search={{ filters.search }}{% endif %}{% if filters.category %}&category={{ filters.category }}{% endif %}{% if filters.brand %}&brand={{ filters.brand }}{% endif %}{% if filters.sort %}&sort={{ filters.sort }}{% endif %}{% if filters.min_price %}&min_price={{ filters.min_price|int }}{% endif %}{% if filters.max_price %}&max_price={{ filters.max_price|int }}{% endif %}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        
+                        {% for p in range(1, pagination.pages + 1) %}
+                            {% if p == 1 or p == pagination.pages or (p >= pagination.page - 2 and p <= pagination.page + 2) %}
+                                <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                                    <a class="page-link shadow-sm" href="/catalog?page={{ p }}{% if filters.search %}&search={{ filters.search }}{% endif %}{% if filters.category %}&category={{ filters.category }}{% endif %}{% if filters.brand %}&brand={{ filters.brand }}{% endif %}{% if filters.sort %}&sort={{ filters.sort }}{% endif %}{% if filters.min_price %}&min_price={{ filters.min_price|int }}{% endif %}{% if filters.max_price %}&max_price={{ filters.max_price|int }}{% endif %}">{{ p }}</a>
+                                </li>
+                            {% elif p == pagination.page - 3 or p == pagination.page + 3 %}
+                                <li class="page-item disabled"><span class="page-link border-0 bg-transparent">...</span></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <li class="page-item {% if pagination.page >= pagination.pages %}disabled{% endif %}">
+                            <a class="page-link shadow-sm" href="/catalog?page={{ pagination.page + 1 }}{% if filters.search %}&search={{ filters.search }}{% endif %}{% if filters.category %}&category={{ filters.category }}{% endif %}{% if filters.brand %}&brand={{ filters.brand }}{% endif %}{% if filters.sort %}&sort={{ filters.sort }}{% endif %}{% if filters.min_price %}&min_price={{ filters.min_price|int }}{% endif %}{% if filters.max_price %}&max_price={{ filters.max_price|int }}{% endif %}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                {% endif %}
+            
+            {% else %}
+                <!-- Empty State -->
+                <div class="glass-card text-center py-5">
+                    <div class="empty-state">
+                        <div class="empty-icon-wrapper mb-4">
+                            <i class="bi bi-search fs-1 text-muted opacity-50"></i>
+                        </div>
+                        <h4 class="fw-700 text-secondary mb-2">Tidak ada sepatu ditemukan</h4>
+                        <p class="text-muted mb-4">Coba ubah filter atau kata kunci pencarian Anda.</p>
+                        <a href="/catalog" class="btn btn-secondary-custom rounded-pill px-4 py-2">
+                            <i class="bi bi-arrow-counterclockwise me-2"></i>Reset Semua Filter
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/catalog.js"></script>
+{% endblock %}

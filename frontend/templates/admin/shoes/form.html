@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit' if shoe else 'Tambah' }} Sepatu - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4 animate-fade-up">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="/admin" class="text-decoration-none text-muted">Admin Panel</a></li>
+                <li class="breadcrumb-item"><a href="/admin/shoes" class="text-decoration-none text-muted">Kelola Sepatu</a></li>
+                <li class="breadcrumb-item active text-primary fw-600" aria-current="page">{{ 'Edit' if shoe else 'Tambah' }} Sepatu</li>
+            </ol>
+        </nav>
+        <h2 class="fw-800 m-0"><i class="bi bi-{{ 'pencil-square' if shoe else 'plus-circle' }} me-2 text-primary-custom"></i>{{ 'Edit' if shoe else 'Tambah Baru' }}</h2>
+    </div>
+
+    <div class="glass-card shadow-sm border-light animate-fade-up delay-100">
+        <form action="/admin/shoes/{{ shoe.id ~ '/edit' if shoe else 'add' }}" method="POST" enctype="multipart/form-data">
+            
+            <div class="row g-4">
+                <!-- Left Column: Image -->
+                <div class="col-lg-4">
+                    <div class="mb-4">
+                        <label class="form-label fw-600">Gambar Sepatu</label>
+                        <div class="border rounded bg-white d-flex align-items-center justify-content-center position-relative overflow-hidden mb-3" style="height: 250px; border-style: dashed !important; border-width: 2px !important; border-color: var(--border-color) !important;">
+                            <img id="image-preview" src="{{ '/uploads/' ~ shoe.image_filename if shoe and shoe.image_filename else '' }}" class="img-fluid object-fit-contain w-100 h-100 p-3 {{ 'd-none' if not shoe or not shoe.image_filename else '' }}">
+                            <div id="image-placeholder" class="text-center text-muted {{ 'd-none' if shoe and shoe.image_filename else '' }}">
+                                <i class="bi bi-cloud-arrow-up fs-1 d-block mb-2 text-primary-custom" style="opacity: 0.5;"></i>
+                                <span class="small">Pilih gambar (Maks 5MB)</span>
+                            </div>
+                        </div>
+                        <input class="form-control form-control-sm" type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp" onchange="previewImage(this);">
+                        {% if shoe and shoe.image_filename %}
+                            <small class="text-muted mt-1 d-block"><i class="bi bi-info-circle me-1"></i>Biarkan kosong jika tidak ingin mengubah gambar.</small>
+                        {% endif %}
+                    </div>
+                    
+                    {% if shoe %}
+                    <div class="mb-4">
+                        <label class="form-label fw-600">Status</label>
+                        <div class="form-check form-switch fs-5">
+                            <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" value="true" {% if shoe.is_active %}checked{% endif %}>
+                            <label class="form-check-label fs-6 pt-1 ms-2" for="is_active">Sepatu Aktif (Tampil di Katalog)</label>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Right Column: Details -->
+                <div class="col-lg-8">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <h6 class="fw-700 text-secondary border-bottom border-light pb-2 mb-3">Informasi Utama</h6>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label for="name" class="form-label fw-600">Nama Sepatu <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ shoe.name if shoe else '' }}" required placeholder="Contoh: Nike Mercurial Vapor 15 Elite">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="brand" class="form-label fw-600">Brand <span class="text-danger">*</span></label>
+                            <select class="form-select" id="brand" name="brand" required>
+                                <option value="">Pilih Brand</option>
+                                <option value="nike" {% if shoe and shoe.brand == 'nike' %}selected{% endif %}>Nike</option>
+                                <option value="adidas" {% if shoe and shoe.brand == 'adidas' %}selected{% endif %}>Adidas</option>
+                                <option value="puma" {% if shoe and shoe.brand == 'puma' %}selected{% endif %}>Puma</option>
+                                <option value="mizuno" {% if shoe and shoe.brand == 'mizuno' %}selected{% endif %}>Mizuno</option>
+                                <option value="umbro" {% if shoe and shoe.brand == 'umbro' %}selected{% endif %}>Umbro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="category" class="form-label fw-600">Kategori / Label <span class="text-danger">*</span></label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Pilih Kategori</option>
+                                <option value="speed_boot" {% if shoe and shoe.category == 'speed_boot' %}selected{% endif %}>Speed Boot</option>
+                                <option value="control_boot" {% if shoe and shoe.category == 'control_boot' %}selected{% endif %}>Control Boot</option>
+                                <option value="power_boot" {% if shoe and shoe.category == 'power_boot' %}selected{% endif %}>Power Boot</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="price" class="form-label fw-600">Harga (Rp) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">Rp</span>
+                                <input type="number" class="form-control" id="price" name="price" value="{{ shoe.price if shoe else '' }}" required min="0" step="1000">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="stock" class="form-label fw-600">Stok Tersedia</label>
+                            <input type="number" class="form-control" id="stock" name="stock" value="{{ shoe.stock if shoe else '0' }}" min="0">
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <h6 class="fw-700 text-secondary border-bottom border-light pb-2 mb-3">Detail Tambahan</h6>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="description" class="form-label fw-600">Deskripsi Lengkap</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Deskripsikan fitur, material, dan teknologi sepatu ini. (Digunakan oleh AI untuk rekomendasi)">{{ shoe.description if shoe else '' }}</textarea>
+                            <div class="form-text">Deskripsi yang detail membantu sistem AI memberikan rekomendasi yang lebih akurat.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-600">Ukuran Tersedia (EU)</label>
+                            <input type="hidden" id="sizes_available" name="sizes_available" value='{{ shoe.sizes_available|tojson|safe if shoe and shoe.sizes_available else "[]" }}'>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-2" id="sizes-container">
+                                <!-- Sizes will be rendered here by JS -->
+                            </div>
+                            
+                            <div class="input-group" style="max-width: 250px;">
+                                <input type="number" class="form-control form-control-sm" id="new-size-input" placeholder="Ukuran (Cth: 42)" min="30" max="50">
+                                <button class="btn btn-secondary-custom btn-sm" type="button" onclick="addSize()"><i class="bi bi-plus-lg"></i> Tambah</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 mt-5">
+                    <hr class="border-light mb-4">
+                    <div class="d-flex justify-content-end gap-3">
+                        <a href="/admin/shoes" class="btn btn-secondary-custom px-4">Batal</a>
+                        <button type="submit" class="btn btn-primary-custom px-5">
+                            <i class="bi bi-save me-2"></i> {{ 'Simpan Perubahan' if shoe else 'Simpan Sepatu Baru' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/admin_shoes.js"></script>
+{% endblock %}

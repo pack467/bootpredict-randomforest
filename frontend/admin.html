@@ -18,7 +18,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-custom" style="background-color: var(--bg-card-solid);">
         <div class="container">
-            <a class="navbar-brand" href="/admin.html">
+            <a class="navbar-brand" href="/admin">
                 <span class="brand-icon">⚽</span> Admin<span class="text-primary-custom">Panel</span>
             </a>
             <div class="d-flex align-items-center gap-3">
@@ -32,7 +32,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto align-items-center gap-1">
                     <li class="nav-item">
-                        <a class="nav-link" href="/dashboard.html"><i class="bi bi-arrow-left me-1"></i> Kembali ke User View</a>
+                        <a class="nav-link" href="/dashboard"><i class="bi bi-arrow-left me-1"></i> Kembali ke User View</a>
                     </li>
                 </ul>
                 <div class="d-none d-lg-flex align-items-center gap-3">
@@ -105,6 +105,9 @@
                 <button class="admin-tab" id="users-tab" data-bs-toggle="tab" data-bs-target="#tab-users" type="button" role="tab" onclick="handleTabSwitch('users')">
                     <i class="bi bi-people me-2"></i> Manajemen User
                 </button>
+                <a href="/admin/shoes" class="admin-tab text-decoration-none d-inline-flex align-items-center">
+                    <i class="bi bi-box-seam me-2"></i> Kelola Sepatu (Katalog)
+                </a>
             </div>
 
             <!-- Tab Contents -->
@@ -131,6 +134,14 @@
                                     </button>
                                 </form>
                                 <div id="upload-status" class="mt-3"></div>
+
+                                <!-- Reset Dataset -->
+                                <hr class="my-4" style="border-color: var(--border-color);">
+                                <div class="section-title" style="font-size: 0.85rem;"><i class="bi bi-trash3 text-danger"></i> Reset Dataset</div>
+                                <p class="text-muted-custom small mb-3">Hapus semua data latih dari database. Anda perlu mengupload CSV baru setelah reset.</p>
+                                <button class="btn btn-danger-custom w-100 py-2" id="btn-clear-dataset" onclick="handleClearDataset()">
+                                    <i class="bi bi-trash3 me-2"></i> Hapus Semua Dataset
+                                </button>
                             </div>
                         </div>
                         <div class="col-xl-8">
@@ -163,6 +174,14 @@
                                 </div>
                                 <button class="btn btn-primary-custom w-100 py-3 mt-2" id="btn-train" onclick="handleTrain()">
                                     <i class="bi bi-lightning-charge-fill me-2"></i> Mulai Proses Training AI
+                                </button>
+
+                                <!-- Delete Model -->
+                                <hr class="my-4" style="border-color: var(--border-color);">
+                                <div class="section-title" style="font-size: 0.85rem;"><i class="bi bi-file-earmark-x text-danger"></i> Hapus Model</div>
+                                <p class="text-muted-custom small mb-3">Hapus file model (.pkl) dan log training. Prediksi tidak akan berfungsi sampai model dilatih ulang.</p>
+                                <button class="btn btn-danger-custom w-100 py-2" id="btn-delete-model" onclick="handleDeleteModel()">
+                                    <i class="bi bi-file-earmark-x me-2"></i> Hapus Model & Log Training
                                 </button>
                             </div>
                         </div>
@@ -244,10 +263,10 @@
                     document.getElementById('filename-display').innerHTML='<span class=\'text-primary-custom\'><i class=\'bi bi-check-circle-fill me-1\'></i> ' + files[0].name + '</span>';
                 }, false);
             }
+            
+            initAdmin();
+            loadDatasetRecords();
         });
-        
-        initAdmin();
-        loadDatasetRecords();
     </script>
 </body>
 </html>
